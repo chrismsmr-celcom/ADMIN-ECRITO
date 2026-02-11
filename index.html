@@ -9,125 +9,136 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-   <style>
-    :root { 
-        --makmus-red: #a30000; 
-        --sidebar-dark: #1e1e1e;
-        --gdoc-bg: #f8f9fa;
-        --doc-white: #ffffff;
-        --border-soft: #e0e0e0;
-        --shadow-soft: 0 1px 3px rgba(0,0,0,0.08);
-        --text-dark: #202124;
-        --text-soft: #5f6368;
-        --blue-focus: #1a73e8;
-    }
+    <style>
+        :root { 
+            --makmus-red: #a30000; 
+            --sidebar-dark: #1e1e1e;
+            --gdoc-bg: #f8f9fa;
+            --doc-white: #ffffff;
+            --border-soft: #e0e0e0;
+            --shadow-soft: 0 1px 3px rgba(0,0,0,0.08);
+            --text-dark: #202124;
+            --blue-focus: #1a73e8;
+        }
 
-    body { 
-        font-family: 'Inter', sans-serif; 
-        margin: 0; 
-        display: flex; 
-        flex-direction: row;
-        height: 100vh; 
-        background: var(--gdoc-bg); 
-        overflow: hidden; 
-    }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            height: 100vh; 
+            background: var(--gdoc-bg); 
+            overflow: hidden; 
+        }
 
-    /* --- SIDEBAR --- */
-    .sidebar { 
-        width: 230px; 
-        background: var(--sidebar-dark); 
-        color: white; 
-        display: flex; 
-        flex-direction: column; 
-        flex-shrink: 0; 
-        box-shadow: 2px 0 10px rgba(0,0,0,0.15);
-        z-index: 10;
-    }
+        /* --- SIDEBAR --- */
+        .sidebar { 
+            width: 230px; 
+            background: var(--sidebar-dark); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            flex-shrink: 0; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
 
-    .logo-area { padding: 22px; text-align: center; border-bottom: 1px solid #333; }
-    .logo-area h1 { font-family: 'Bebas Neue'; color: var(--makmus-red); margin: 0; letter-spacing: 2px; font-size: 24px; }
+        .logo-area { padding: 22px; text-align: center; border-bottom: 1px solid #333; }
+        .logo-area h1 { font-family: 'Bebas Neue'; color: var(--makmus-red); margin: 0; letter-spacing: 2px; font-size: 24px; }
 
-    .nav-list { flex-grow: 1; padding: 8px 0; overflow-y: auto; }
-    .nav-btn { 
-        padding: 13px 22px; cursor: pointer; display: flex; align-items: center; gap: 10px;
-        transition: 0.2s; color: #bdbdbd; font-size: 0.88rem; border-left: 3px solid transparent; 
-    }
-    .nav-btn:hover { background: #2a2a2a; color: white; }
-    .nav-btn.active { background: #2a2a2a; color: white; border-left-color: var(--makmus-red); font-weight: 600; }
+        .nav-list { flex-grow: 1; padding: 8px 0; overflow-y: auto; }
+        .nav-btn { 
+            padding: 13px 22px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            transition: 0.2s; color: #bdbdbd; font-size: 0.88rem; border-left: 3px solid transparent; 
+        }
+        .nav-btn:hover { background: #2a2a2a; color: white; }
+        .nav-btn.active { background: #2a2a2a; color: white; border-left-color: var(--makmus-red); font-weight: 600; }
 
-    /* --- WORKSPACE --- */
-    .workspace { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* --- WORKSPACE --- */
+        .workspace { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-    .top-bar { 
-        min-height: 56px; background: #ffffff; border-bottom: 1px solid var(--border-soft); 
-        display: flex; align-items: center; padding: 10px 24px; justify-content: space-between; 
-        flex-wrap: wrap; gap: 10px;
-    }
+        .top-bar { 
+            min-height: 56px; background: #ffffff; border-bottom: 1px solid var(--border-soft); 
+            display: flex; align-items: center; padding: 10px 24px; justify-content: space-between; 
+        }
 
-    .btn-send { background: var(--blue-focus); color: white; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;}
-    .btn-send:hover { background: #1557b0; }
+        .btn-send { background: var(--blue-focus); color: white; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;}
+        .btn-send:hover { background: #1557b0; }
 
-    /* --- EDITOR --- */
-    .editor-wrapper { flex-grow: 1; overflow-y: auto; padding: 24px 15px; display: flex; justify-content: center; }
-    .page-container { 
-        width: 100%; max-width: 880px; background: var(--doc-white); box-shadow: var(--shadow-soft); 
-        border-radius: 8px; min-height: 100vh; padding: 40px; border: 1px solid var(--border-soft); box-sizing: border-box;
-    }
+        /* --- EDITOR --- */
+        .editor-wrapper { flex-grow: 1; overflow-y: auto; padding: 24px 15px; display: flex; justify-content: center; }
+        .page-container { 
+            width: 100%; max-width: 880px; background: var(--doc-white); box-shadow: var(--shadow-soft); 
+            border-radius: 8px; min-height: 100vh; padding: 40px; border: 1px solid var(--border-soft); box-sizing: border-box;
+        }
 
-    .metadata-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .metadata-grid input, .author-grid input, .tags-full input { 
-        border: 1px solid var(--border-soft); padding: 12px; border-radius: 6px; outline: none; font-family: 'Inter';
-    }
-    .metadata-grid input:focus, .author-grid input:focus { border-color: var(--blue-focus); }
+        .position-selector {
+            background: #fff8f8; padding: 15px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 20px; border: 1px dashed var(--makmus-red);
+        }
+        .position-selector label { font-size: 0.85rem; font-weight: 600; color: #444; cursor: pointer; }
 
-    .author-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-    .tags-full { width: 100%; margin-bottom: 16px; }
-    .tags-full input { width: 100%; box-sizing: border-box; }
+        .metadata-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .metadata-grid input, .author-grid input, .tags-full input { 
+            border: 1px solid var(--border-soft); padding: 12px; border-radius: 6px; outline: none; font-family: 'Inter'; width: 100%; box-sizing: border-box;
+        }
+        
+        .image-group { display: flex; flex-direction: column; gap: 5px; }
+        .credit-input { 
+            font-size: 0.75rem !important; color: #666; border: none !important; border-bottom: 1px solid #eee !important; padding: 4px 0 !important; border-radius: 0 !important;
+        }
 
-    #sport-extra { display: none; margin-bottom: 16px; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .author-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .tags-full { margin-bottom: 16px; }
 
-    @media (max-width: 900px) {
-        body { flex-direction: column; overflow-y: auto; }
-        .sidebar { width: 100%; height: auto; flex-direction: row; }
-        .logo-area { border-bottom: none; border-right: 1px solid #333; }
-        .nav-list { display: flex; flex-direction: row; }
-        .nav-btn { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
-        .nav-btn.active { border-bottom-color: var(--makmus-red); }
-        .page-container { padding: 20px; border-radius: 0; }
-        .metadata-grid, .author-grid { grid-template-columns: 1fr; }
-    }
-</style>
+        #sport-extra { display: none; margin-bottom: 16px; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; }
+            .page-container { padding: 20px; }
+            .metadata-grid, .author-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
     <nav class="sidebar">
         <div class="logo-area"><h1>MAKMUS PRO</h1></div>
         <div class="nav-list">
-            <div class="nav-btn active" onclick="setMode('TOP', this)"> Actu Principale</div>
-            <div class="nav-btn" onclick="setMode('SPORT', this)"> Résultats Sport</div>
-            <div class="nav-btn" onclick="setMode('LIFESTYLE', this)"> Lifestyle</div>
-            <div class="nav-btn" onclick="setMode('MUSIQUE', this)"> Musique</div>
-            <div class="nav-btn" onclick="setMode('VIDEO', this)"> Vidéo / Shorts</div>
-        </div>
+<div class="nav-btn" onclick="setMode('TOP', this)"> Accueil</div>
+<div class="nav-btn" onclick="setMode('SPORT', this)">Sport</div>
+<div class="nav-btn" onclick="setMode('AUTRE_INFO', this)"> Autre Info</div>
+<div class="nav-btn" onclick="setMode('OPINION', this)"> Opinion</div>       
+ </div>
     </nav>
 
     <div class="workspace">
         <header class="top-bar">
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div id="mode-indicator" style="font-weight: 800; color: #555;">MODE : ACTUALITÉ</div>
+                <div id="mode-indicator" style="font-weight: 800; color: #555;">MODE : TOP</div>
                 <small id="autosave-status" style="color: #888; font-style: italic; font-size: 11px;"></small>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="btn-preview" onclick="openPreview()" style="background: #f1f3f4; color: #3c4043; border: 1px solid #dadce0; padding: 9px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">Aperçu</button>
+                <button onclick="openPreview()" style="background: #f1f3f4; border: 1px solid #dadce0; padding: 9px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">Aperçu</button>
                 <button class="btn-send" onclick="publishContent()">Diffuser l'article</button>
             </div>
         </header>
 
         <div class="editor-wrapper">
             <div class="page-container">
+                
+                <div class="position-selector">
+                    <span style="font-size: 0.75rem; color: var(--makmus-red); font-weight: 800;">PLACEMENT :</span>
+                    <label><input type="radio" name="article-pos" value="priority" checked> HERO (Mise en avant)</label>
+                    <label><input type="radio" name="article-pos" value="standard"> LISTE (Normal)</label>
+                </div>
+
                 <div class="metadata-grid">
-                    <input type="text" id="main-title" placeholder="Saisir le titre ici...">
-                    <input type="text" id="main-image" placeholder="URL de l'image vedette">
+                    <input type="text" id="main-title" placeholder="Titre de l'article...">
+                    <div class="image-group">
+                        <input type="text" id="main-image" placeholder="URL Image vedette">
+                        <input type="text" id="image-caption" class="credit-input" placeholder="Légende ou Crédit photo">
+                    </div>
                 </div>
 
                 <div id="sport-extra">
@@ -138,12 +149,12 @@
                 </div>
 
                 <div class="tags-full">
-                    <input type="text" id="main-tags" placeholder="Tags (ex: Kinshasa, Économie, Football...)">
+                    <input type="text" id="main-tags" placeholder="Tags (ex: Kinshasa, Politique, Musique)">
                 </div>
 
                 <div class="author-grid">
-                    <input type="text" id="author-name" placeholder="Nom de l'auteur" oninput="saveAuthorData()">
-                    <input type="text" id="author-img" placeholder="URL Photo de l'auteur" oninput="saveAuthorData()">
+                    <input type="text" id="author-name" placeholder="Nom de l'auteur">
+                    <input type="text" id="author-img" placeholder="URL Photo auteur">
                 </div>
 
                 <textarea id="word-editor"></textarea>
@@ -160,36 +171,52 @@
 
         tinymce.init({
             selector: '#word-editor',
-            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace vertical tabfocus visualblocks code fullscreen insertdatetime media table code help wordcount powerpaste table checklist typography emoticons',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | link image media | removeformat',
-            height: 600,
+            plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table wordcount emoticons',
+            toolbar: 'undo redo | blocks bold italic | alignleft aligncenter alignright | link image media | removeformat',
+            height: 500,
             branding: false,
-            promotion: false,
-            content_style: "body { font-family: 'Inter', sans-serif; font-size: 14px; }"
+            content_style: "body { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; }"
         });
 
-        // --- GESTION LOCALE ---
-        function saveAuthorData() {
-            localStorage.setItem('makmus_author_name', document.getElementById('author-name').value);
-            localStorage.setItem('makmus_author_img', document.getElementById('author-img').value);
-        }
-
         function setMode(mode, el) {
-            currentCategory = mode;
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('mode-indicator').innerText = 'MODE : ' + mode;
-            document.getElementById('sport-extra').style.display = (mode === 'SPORT') ? 'grid' : 'none';
-        }
+    // 1. Mise à jour de la catégorie globale
+    currentCategory = mode;
 
-        // --- PUBLICATION ---
+    // 2. Gestion visuelle des boutons de la sidebar
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (el) el.classList.add('active');
+
+    // 3. Mise à jour de l'indicateur de mode (sécurisé)
+    const indicator = document.getElementById('mode-indicator');
+    if (indicator) {
+        indicator.innerText = 'MODE : ' + mode.replace('_', ' ');
+    }
+
+    // 4. Affichage des options spécifiques au SPORT
+    const sportExtra = document.getElementById('sport-extra');
+    if (sportExtra) {
+        sportExtra.style.display = (mode === 'SPORT') ? 'grid' : 'none';
+    }
+
+    // 5. AUTO-CONFIG : Si c'est une Info de sidebar ou Opinion, 
+    // on désactive souvent l'option "Prioritaire / Hero" par défaut
+    const priorityCheckbox = document.querySelector('input[name="priority"]'); // à adapter selon ton HTML
+    if (priorityCheckbox && (mode === 'AUTRE_INFO' || mode === 'OPINION')) {
+        priorityCheckbox.checked = false;
+    }
+    
+    console.log("Mode actuel défini sur :", mode);
+}
+
         async function publishContent() {
             const title = document.getElementById('main-title').value;
             const img = document.getElementById('main-image').value;
+            const caption = document.getElementById('image-caption').value;
             const tags = document.getElementById('main-tags').value;
             const author = document.getElementById('author-name').value;
             const authorImg = document.getElementById('author-img').value;
             const body = tinymce.get('word-editor').getContent();
+            const isPriority = document.querySelector('input[name="article-pos"]:checked').value === 'priority';
 
             if(!title || !img) return alert("Le titre et l'image sont obligatoires !");
 
@@ -206,77 +233,105 @@
                 titre: finalTitle,
                 description: body,
                 image_url: img,
+                image_caption: caption,
                 category: currentCategory,
                 tags: tags,
-                author_name: author || "Rédaction Makmus",
+                author_name: author || "Christopher DIKES",
                 author_image: authorImg,
                 is_published: true,
+                is_priority: isPriority,
                 created_at: new Date()
             }]);
 
             if(!error) {
-                alert("✅ Article publié !");
+                alert("✅ Article diffusé avec succès !");
                 localStorage.removeItem('makmus_draft');
                 location.reload();
             } else {
-                alert("Erreur : " + error.message);
+                alert("Erreur Supabase : " + error.message);
             }
         }
 
-        // --- AUTO-SAVE ---
         function autoSave() {
             const draft = {
                 title: document.getElementById('main-title').value,
                 image: document.getElementById('main-image').value,
-                tags: document.getElementById('main-tags').value,
+                caption: document.getElementById('image-caption').value,
                 content: tinymce.get('word-editor').getContent(),
-                category: currentCategory
+                tags: document.getElementById('main-tags').value
             };
             localStorage.setItem('makmus_draft', JSON.stringify(draft));
-            const now = new Date();
-            document.getElementById('autosave-status').innerText = `Sauvegardé à ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            const d = new Date();
+            document.getElementById('autosave-status').innerText = `Enregistré à ${d.getHours()}h${d.getMinutes().toString().padStart(2, '0')}`;
         }
 
-        // --- APERÇU ---
         function openPreview() {
             const title = document.getElementById('main-title').value || "Titre";
             const img = document.getElementById('main-image').value;
-            const author = document.getElementById('author-name').value || "Rédaction";
+            const caption = document.getElementById('image-caption').value;
             const content = tinymce.get('word-editor').getContent();
             
             const win = window.open('', '_blank');
             win.document.write(`
-                <html><head><title>Aperçu</title><style>
-                body { font-family: 'Inter', sans-serif; max-width: 700px; margin: 50px auto; line-height: 1.6; padding: 20px; }
-                img { width: 100%; border-radius: 10px; margin: 20px 0; }
-                .cat { color: red; font-weight: bold; text-transform: uppercase; }
-                .meta { color: #666; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+                <html><head><style>
+                    body { font-family: 'Inter', sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; color: #333; }
+                    .cat { color: #a30000; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; }
+                    img { width: 100%; border-radius: 8px; }
+                    .caption { font-size: 0.8rem; color: #777; margin-top: 8px; text-align: center; font-style: italic; }
                 </style></head><body>
-                <div class="cat">${currentCategory}</div>
-                <h1>${title}</h1>
-                <div class="meta">Par ${author} — Le ${new Date().toLocaleDateString()}</div>
-                ${img ? `<img src="${img}">` : ''}
-                <div>${content}</div>
+                    <div class="cat">${currentCategory}</div>
+                    <h1>${title}</h1>
+                    ${img ? `<img src="${img}">` : ''}
+                    ${caption ? `<div class="caption">${caption}</div>` : ''}
+                    <hr>
+                    <div>${content}</div>
                 </body></html>
             `);
         }
 
-        // --- INITIALISATION ---
         window.addEventListener('load', () => {
-            // Charger auteur
             document.getElementById('author-name').value = localStorage.getItem('makmus_author_name') || "";
             document.getElementById('author-img').value = localStorage.getItem('makmus_author_img') || "";
             
-            // Charger brouillon
             const saved = localStorage.getItem('makmus_draft');
             if (saved) {
                 const draft = JSON.parse(saved);
                 document.getElementById('main-title').value = draft.title || '';
                 document.getElementById('main-image').value = draft.image || '';
+                document.getElementById('image-caption').value = draft.caption || '';
                 document.getElementById('main-tags').value = draft.tags || '';
             }
             setInterval(autoSave, 30000);
         });
+        async function loadOpinions() {
+    const opinionList = document.getElementById('opinion-list');
+    if (!opinionList) return;
+
+    // On récupère uniquement la catégorie OPINION
+    const { data: opinions, error } = await supabaseClient
+        .from('articles')
+        .select('*')
+        .eq('category', 'OPINION') // C'est ici que la magie opère
+        .eq('is_published', true)
+        .order('created_at', { ascending: false })
+        .limit(4);
+
+    if (error) return console.error("Erreur opinions:", error);
+
+    if (opinions && opinions.length > 0) {
+        opinionList.innerHTML = opinions.map(op => `
+            <div class="opinion-item" onclick="captureAction('${op.titre.replace(/'/g, "\\'")}', 'Opinion', 'redaction.html?id=${op.id}')">
+                <div class="opinion-item-text">
+                    <span>${op.author_name || 'CHRONIQUEUR'}</span>
+                    <h4>${op.titre}</h4>
+                </div>
+                <img class="opinion-avatar" src="${op.author_image || 'https://via.placeholder.com/40'}" onerror="this.src='https://via.placeholder.com/40'">
+            </div>
+        `).join('');
+    } else {
+        opinionList.innerHTML = "<p style='font-size:0.8rem; color:#999;'>Aucune opinion pour le moment.</p>";
+    }
+}
     </script>
 </body>
 </html>
