@@ -105,10 +105,11 @@
     <nav class="sidebar">
         <div class="logo-area"><h1>MAKMUS PRO</h1></div>
         <div class="nav-list">
-<div class="nav-btn" onclick="setMode('TOP', this)"> Accueil</div>
-<div class="nav-btn" onclick="setMode('SPORT', this)">Sport</div>
-<div class="nav-btn" onclick="setMode('AUTRE_INFO', this)"> Autre Info</div>
-<div class="nav-btn" onclick="setMode('OPINION', this)"> Opinion</div>       
+<div class="nav-btn" onclick="setMode('TOP', this)">🏠 Accueil</div>
+<div class="nav-btn" onclick="setMode('SPORT', this)">⚽ Sport</div>
+<div class="nav-btn" onclick="setMode('AUTRE_INFO', this)">🔢 Autre Info</div>
+<div class="nav-btn" onclick="setMode('OPINION', this)"> Opinion</div>  
+<div class="nav-btn" onclick="setMode('DASHBOARD_SPORT', this)">📊 Stats & Classements</div>     
  </div>
     </nav>
 
@@ -129,9 +130,8 @@
                 
                 <div class="position-selector">
                     <span style="font-size: 0.75rem; color: var(--makmus-red); font-weight: 800;">PLACEMENT :</span>
-                    <label><input type="radio" name="article-pos" value="priority" checked> ⭐ HERO (Mise en avant)</label>
-                    <label><input type="radio" name="article-pos" value="standard"> 📄 LISTE (Normal)</label>
-                </div>
+<input type="radio" name="article-pos" value="priority"> HERO
+<input type="radio" name="article-pos" value="standard" checked> STANDARD                </div>
 
                 <div class="metadata-grid">
                     <input type="text" id="main-title" placeholder="Titre de l'article...">
@@ -186,63 +186,81 @@
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (el) el.classList.add('active');
 
-    // 3. Mise à jour de l'indicateur de mode (sécurisé)
+    // 3. Mise à jour de l'indicateur de mode
     const indicator = document.getElementById('mode-indicator');
     if (indicator) {
         indicator.innerText = 'MODE : ' + mode.replace('_', ' ');
     }
 
-    // 4. Affichage des options spécifiques au SPORT
+    // 4. Affichage des options spécifiques (Matchs vs Stats)
     const sportExtra = document.getElementById('sport-extra');
     if (sportExtra) {
+        // On affiche les champs "Équipes/Scores" seulement pour le mode SPORT classique
         sportExtra.style.display = (mode === 'SPORT') ? 'grid' : 'none';
     }
 
-    // 5. AUTO-CONFIG : Si c'est une Info de sidebar ou Opinion, 
-    // on désactive souvent l'option "Prioritaire / Hero" par défaut
-    const priorityCheckbox = document.querySelector('input[name="priority"]'); // à adapter selon ton HTML
-    if (priorityCheckbox && (mode === 'AUTRE_INFO' || mode === 'OPINION')) {
-        priorityCheckbox.checked = false;
+    // 5. AUTO-CONFIG des champs selon le mode
+    const titleInput = document.getElementById('main-title');
+    const captionInput = document.getElementById('image-caption');
+    const authorInput = document.getElementById('author-name');
+
+    if (mode === 'DASHBOARD_SPORT') {
+        if (titleInput) titleInput.placeholder = "Nom de l'équipe ou Pays (ex: SÉNÉGAL)";
+        if (captionInput) captionInput.placeholder = "Stats (ex: 2-1-4-7 pour Or-Arg-Bro-Total)";
+        if (authorInput) authorInput.value = "MAKMUS_SPORT_RESUME"; // Obligatoire pour ton moteur sport
+    } else {
+        if (titleInput) titleInput.placeholder = "Titre de l'article...";
+        if (captionInput) captionInput.placeholder = "Légende ou Crédit photo";
+        // On remet l'auteur par défaut s'il est vide
+        if (authorInput && authorInput.value === "MAKMUS_SPORT_RESUME") {
+            authorInput.value = localStorage.getItem('makmus_author_name') || "";
+        }
+    }
+
+    // 6. Gestion du sélecteur de priorité (Correction du sélecteur)
+    // Dans ton HTML, c'est un radio bouton avec name="article-pos"
+    const standardPos = document.querySelector('input[name="article-pos"][value="standard"]');
+    if (standardPos && (mode === 'AUTRE_INFO' || mode === 'OPINION' || mode === 'DASHBOARD_SPORT')) {
+        standardPos.checked = true; // On force "Standard" pour éviter de mettre une stat en Hero
     }
     
-    console.log("Mode actuel défini sur :", mode);
+    console.log("Système Makmus : Mode " + mode + " activé.");
 }
-
         async function publishContent() {
-            const title = document.getElementById('main-title').value;
-            const img = document.getElementById('main-image').value;
-            const caption = document.getElementById('image-caption').value;
-            const tags = document.getElementById('main-tags').value;
-            const author = document.getElementById('author-name').value;
-            const authorImg = document.getElementById('author-img').value;
-            const body = tinymce.get('word-editor').getContent();
-            const isPriority = document.querySelector('input[name="article-pos"]:checked').value === 'priority';
+    // ... tes variables existantes ...
+    let finalCategory = currentCategory;
+    let finalTitle = title;
 
-            if(!title || !img) return alert("Le titre et l'image sont obligatoires !");
+    if (currentCategory === 'DASHBOARD_SPORT') {
+        // Pour les stats, on demande à l'utilisateur de choisir la sous-catégorie (JO, LIGUE1, NBA)
+        const subCat = prompt("Quelle catégorie de stats ? (JO, LIGUE1, NBA, LA_LIGA)", "JO");
+        if (!subCat) return;
+        finalCategory = subCat.toUpperCase();
+        finalTitle = title; // Ici le titre sera "SÉNÉGAL" ou "PSG"
+    } 
+    else if (currentCategory === 'SPORT') {
+        // Logique match classique
+        const ta = document.getElementById('team-a').value;
+        const tb = document.getElementById('team-b').value;
+        const sa = document.getElementById('score-a').value || 0;
+        const sb = document.getElementById('score-b').value || 0;
+        finalTitle = `${ta} ${sa}-${sb} ${tb}`;
+    }
 
-            let finalTitle = title;
-            if(currentCategory === 'SPORT') {
-                const ta = document.getElementById('team-a').value;
-                const tb = document.getElementById('team-b').value;
-                const sa = document.getElementById('score-a').value || 0;
-                const sb = document.getElementById('score-b').value || 0;
-                finalTitle = `${ta} ${sa}-${sb} ${tb}`;
-            }
-
-            const { error } = await supabaseClient.from('articles').insert([{
-                titre: finalTitle,
-                description: body,
-                image_url: img,
-                image_caption: caption,
-                category: currentCategory,
-                tags: tags,
-                author_name: author || "Christopher DIKES",
-                author_image: authorImg,
-                is_published: true,
-                is_priority: isPriority,
-                created_at: new Date()
-            }]);
-
+    // ENVOI À SUPABASE
+    const { error } = await supabaseClient.from('articles').insert([{
+        titre: finalTitle,
+        description: body,
+        image_url: img,
+        image_caption: caption, // C'est ici que tu mettras "2-1-0-3"
+        category: finalCategory,
+        tags: tags,
+        author_name: author || "Christopher DIKES",
+        author_image: authorImg,
+        is_published: true,
+        is_priority: isPriority,
+        created_at: new Date()
+    }]);
             if(!error) {
                 alert("✅ Article diffusé avec succès !");
                 localStorage.removeItem('makmus_draft');
