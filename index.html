@@ -21,82 +21,38 @@
             --blue-focus: #1a73e8;
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            display: flex; 
-            height: 100vh; 
-            background: var(--gdoc-bg); 
-            overflow: hidden; 
-        }
+        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--gdoc-bg); overflow: hidden; }
 
         /* --- SIDEBAR --- */
-        .sidebar { 
-            width: 230px; 
-            background: var(--sidebar-dark); 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            flex-shrink: 0; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.15);
-            z-index: 10;
-        }
-
+        .sidebar { width: 230px; background: var(--sidebar-dark); color: white; display: flex; flex-direction: column; flex-shrink: 0; z-index: 10; }
         .logo-area { padding: 22px; text-align: center; border-bottom: 1px solid #333; }
         .logo-area h1 { font-family: 'Bebas Neue'; color: var(--makmus-red); margin: 0; letter-spacing: 2px; font-size: 24px; }
-
         .nav-list { flex-grow: 1; padding: 8px 0; overflow-y: auto; }
-        .nav-btn { 
-            padding: 13px 22px; cursor: pointer; display: flex; align-items: center; gap: 10px;
-            transition: 0.2s; color: #bdbdbd; font-size: 0.88rem; border-left: 3px solid transparent; 
-        }
+        .nav-btn { padding: 13px 22px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; color: #bdbdbd; font-size: 0.88rem; border-left: 3px solid transparent; }
         .nav-btn:hover { background: #2a2a2a; color: white; }
         .nav-btn.active { background: #2a2a2a; color: white; border-left-color: var(--makmus-red); font-weight: 600; }
 
         /* --- WORKSPACE --- */
         .workspace { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
-
-        .top-bar { 
-            min-height: 56px; background: #ffffff; border-bottom: 1px solid var(--border-soft); 
-            display: flex; align-items: center; padding: 10px 24px; justify-content: space-between; 
-        }
-
-        .btn-send { background: var(--blue-focus); color: white; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;}
-        .btn-send:hover { background: #1557b0; }
+        .top-bar { min-height: 56px; background: #ffffff; border-bottom: 1px solid var(--border-soft); display: flex; align-items: center; padding: 10px 24px; justify-content: space-between; }
+        .btn-send { background: var(--blue-focus); color: white; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
         /* --- EDITOR --- */
         .editor-wrapper { flex-grow: 1; overflow-y: auto; padding: 24px 15px; display: flex; justify-content: center; }
-        .page-container { 
-            width: 100%; max-width: 880px; background: var(--doc-white); box-shadow: var(--shadow-soft); 
-            border-radius: 8px; min-height: 100vh; padding: 40px; border: 1px solid var(--border-soft); box-sizing: border-box;
-        }
+        .page-container { width: 100%; max-width: 880px; background: var(--doc-white); box-shadow: var(--shadow-soft); border-radius: 8px; padding: 40px; border: 1px solid var(--border-soft); box-sizing: border-box; margin-bottom: 50px;}
 
-        .position-selector {
-            background: #fff8f8; padding: 15px; border-radius: 8px; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 20px; border: 1px dashed var(--makmus-red);
-        }
-        .position-selector label { font-size: 0.85rem; font-weight: 600; color: #444; cursor: pointer; }
-
+        .position-selector { background: #fff8f8; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; border: 1px dashed var(--makmus-red); }
         .metadata-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
-        .metadata-grid input, .author-grid input, .tags-full input { 
-            border: 1px solid var(--border-soft); padding: 12px; border-radius: 6px; outline: none; font-family: 'Inter'; width: 100%; box-sizing: border-box;
-        }
+        .metadata-grid input, .author-grid input, .tags-full input, #sport-extra input { border: 1px solid var(--border-soft); padding: 12px; border-radius: 6px; outline: none; width: 100%; box-sizing: border-box; }
         
-        .image-group { display: flex; flex-direction: column; gap: 5px; }
-        .credit-input { 
-            font-size: 0.75rem !important; color: #666; border: none !important; border-bottom: 1px solid #eee !important; padding: 4px 0 !important; border-radius: 0 !important;
-        }
-
+        .credit-input { font-size: 0.75rem !important; color: #666; border: none !important; border-bottom: 1px solid #eee !important; padding: 4px 0 !important; }
         .author-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .tags-full { margin-bottom: 16px; }
-
-        #sport-extra { display: none; margin-bottom: 16px; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        #sport-extra { display: none; margin-bottom: 16px; grid-template-columns: 2fr 1fr 2fr 1fr; gap: 10px; background: #f0f7ff; padding: 15px; border-radius: 8px; }
 
         @media (max-width: 900px) {
             body { flex-direction: column; overflow-y: auto; }
             .sidebar { width: 100%; height: auto; flex-direction: row; }
             .page-container { padding: 20px; }
-            .metadata-grid, .author-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -105,18 +61,19 @@
     <nav class="sidebar">
         <div class="logo-area"><h1>MAKMUS PRO</h1></div>
         <div class="nav-list">
-<div class="nav-btn" onclick="setMode('TOP', this)">🏠 Accueil</div>
-<div class="nav-btn" onclick="setMode('SPORT', this)">⚽ Sport</div>
-<div class="nav-btn" onclick="setMode('AUTRE_INFO', this)">🔢 Autre Info</div>
-<div class="nav-btn" onclick="setMode('OPINION', this)"> Opinion</div>  
-<div class="nav-btn" onclick="setMode('DASHBOARD_SPORT', this)">📊 Stats & Classements</div>     
- </div>
+            <div class="nav-btn active" onclick="setMode('TOP', this)">🏠 Accueil</div>
+            <div class="nav-btn" onclick="setMode('SPORT', this)">⚽ Sport</div>
+            <div class="nav-btn" onclick="setMode('AUTRE_INFO', this)">🔢 Autre Info</div>
+            <div class="nav-btn" onclick="setMode('OPINION', this)">✍️ Opinion</div>  
+            <div class="nav-btn" onclick="setMode('DASHBOARD_SPORT', this)">📊 Stats</div> 
+            <div class="nav-btn" onclick="setMode('LIFESTYLE', this)">✨ Lifestyle</div>    
+        </div>
     </nav>
 
     <div class="workspace">
         <header class="top-bar">
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div id="mode-indicator" style="font-weight: 800; color: #555;">MODE : TOP</div>
+                <div id="mode-indicator" style="font-weight: 800; color: var(--makmus-red);">MODE : TOP</div>
                 <small id="autosave-status" style="color: #888; font-style: italic; font-size: 11px;"></small>
             </div>
             <div style="display: flex; gap: 10px;">
@@ -130,8 +87,9 @@
                 
                 <div class="position-selector">
                     <span style="font-size: 0.75rem; color: var(--makmus-red); font-weight: 800;">PLACEMENT :</span>
-<input type="radio" name="article-pos" value="priority"> HERO
-<input type="radio" name="article-pos" value="standard" checked> STANDARD                </div>
+                    <label><input type="radio" name="article-pos" value="priority"> HERO</label>
+                    <label><input type="radio" name="article-pos" value="standard" checked> STANDARD</label>
+                </div>
 
                 <div class="metadata-grid">
                     <input type="text" id="main-title" placeholder="Titre de l'article...">
@@ -148,7 +106,7 @@
                     <input type="number" id="score-b" placeholder="0">
                 </div>
 
-                <div class="tags-full">
+                <div class="tags-full" style="margin-bottom: 15px;">
                     <input type="text" id="main-tags" placeholder="Tags (ex: Kinshasa, Politique, Musique)">
                 </div>
 
@@ -172,101 +130,95 @@
         tinymce.init({
             selector: '#word-editor',
             plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table wordcount emoticons',
-            toolbar: 'undo redo | blocks bold italic | alignleft aligncenter alignright | link image media | removeformat',
+            toolbar: 'undo redo | blocks bold italic | alignleft aligncenter alignright | bullist numlist | link image emoticons | code',
             height: 500,
+            menubar: false,
             branding: false,
-            content_style: "body { font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; }"
+            content_style: "body { font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; padding: 20px; }"
         });
 
         function setMode(mode, el) {
-    // 1. Mise à jour de la catégorie globale
-    currentCategory = mode;
+            currentCategory = mode;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if (el) el.classList.add('active');
 
-    // 2. Gestion visuelle des boutons de la sidebar
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (el) el.classList.add('active');
+            const indicator = document.getElementById('mode-indicator');
+            indicator.innerText = 'MODE : ' + mode.replace('_', ' ');
 
-    // 3. Mise à jour de l'indicateur de mode
-    const indicator = document.getElementById('mode-indicator');
-    if (indicator) {
-        indicator.innerText = 'MODE : ' + mode.replace('_', ' ');
-    }
+            const sportExtra = document.getElementById('sport-extra');
+            sportExtra.style.display = (mode === 'SPORT') ? 'grid' : 'none';
 
-    // 4. Affichage des options spécifiques (Matchs vs Stats)
-    const sportExtra = document.getElementById('sport-extra');
-    if (sportExtra) {
-        // On affiche les champs "Équipes/Scores" seulement pour le mode SPORT classique
-        sportExtra.style.display = (mode === 'SPORT') ? 'grid' : 'none';
-    }
+            // Adaptation des placeholders
+            const titleInput = document.getElementById('main-title');
+            const authorInput = document.getElementById('author-name');
 
-    // 5. AUTO-CONFIG des champs selon le mode
-    const titleInput = document.getElementById('main-title');
-    const captionInput = document.getElementById('image-caption');
-    const authorInput = document.getElementById('author-name');
-
-    if (mode === 'DASHBOARD_SPORT') {
-        if (titleInput) titleInput.placeholder = "Nom de l'équipe ou Pays (ex: SÉNÉGAL)";
-        if (captionInput) captionInput.placeholder = "Stats (ex: 2-1-4-7 pour Or-Arg-Bro-Total)";
-        if (authorInput) authorInput.value = "MAKMUS_SPORT_RESUME"; // Obligatoire pour ton moteur sport
-    } else {
-        if (titleInput) titleInput.placeholder = "Titre de l'article...";
-        if (captionInput) captionInput.placeholder = "Légende ou Crédit photo";
-        // On remet l'auteur par défaut s'il est vide
-        if (authorInput && authorInput.value === "MAKMUS_SPORT_RESUME") {
-            authorInput.value = localStorage.getItem('makmus_author_name') || "";
+            if (mode === 'DASHBOARD_SPORT') {
+                titleInput.placeholder = "Nom de l'équipe ou Pays (ex: SÉNÉGAL)";
+                authorInput.value = "MAKMUS_SPORT_RESUME";
+            } else if (mode === 'OPINION') {
+                titleInput.placeholder = "Titre de la chronique...";
+                authorInput.value = localStorage.getItem('makmus_author_name') || "";
+            } else if (mode === 'LIFESTYLE') { 
+                titleInput.placeholder = "Titre de l'article Art de vivre / Mode / Food...";
+                authorInput.value = localStorage.getItem('makmus_author_name') || "";
+            } else {
+                titleInput.placeholder = "Titre de l'article...";
+                authorInput.value = localStorage.getItem('makmus_author_name') || "";
+            }
         }
-    }
 
-    // 6. Gestion du sélecteur de priorité (Correction du sélecteur)
-    // Dans ton HTML, c'est un radio bouton avec name="article-pos"
-    const standardPos = document.querySelector('input[name="article-pos"][value="standard"]');
-    if (standardPos && (mode === 'AUTRE_INFO' || mode === 'OPINION' || mode === 'DASHBOARD_SPORT')) {
-        standardPos.checked = true; // On force "Standard" pour éviter de mettre une stat en Hero
-    }
-    
-    console.log("Système Makmus : Mode " + mode + " activé.");
-}
         async function publishContent() {
-    // ... tes variables existantes ...
-    let finalCategory = currentCategory;
-    let finalTitle = title;
+            const title = document.getElementById('main-title').value;
+            const img = document.getElementById('main-image').value;
+            const caption = document.getElementById('image-caption').value;
+            const tags = document.getElementById('main-tags').value;
+            const author = document.getElementById('author-name').value;
+            const authorImg = document.getElementById('author-img').value;
+            const body = tinymce.get('word-editor').getContent();
+            const isPriority = document.querySelector('input[name="article-pos"]:checked').value === 'priority';
 
-    if (currentCategory === 'DASHBOARD_SPORT') {
-        // Pour les stats, on demande à l'utilisateur de choisir la sous-catégorie (JO, LIGUE1, NBA)
-        const subCat = prompt("Quelle catégorie de stats ? (JO, LIGUE1, NBA, LA_LIGA)", "JO");
-        if (!subCat) return;
-        finalCategory = subCat.toUpperCase();
-        finalTitle = title; // Ici le titre sera "SÉNÉGAL" ou "PSG"
-    } 
-    else if (currentCategory === 'SPORT') {
-        // Logique match classique
-        const ta = document.getElementById('team-a').value;
-        const tb = document.getElementById('team-b').value;
-        const sa = document.getElementById('score-a').value || 0;
-        const sb = document.getElementById('score-b').value || 0;
-        finalTitle = `${ta} ${sa}-${sb} ${tb}`;
-    }
+            if(!title || !body) return alert("Le titre et le contenu sont obligatoires !");
 
-    // ENVOI À SUPABASE
-    const { error } = await supabaseClient.from('articles').insert([{
-        titre: finalTitle,
-        description: body,
-        image_url: img,
-        image_caption: caption, // C'est ici que tu mettras "2-1-0-3"
-        category: finalCategory,
-        tags: tags,
-        author_name: author || "Christopher DIKES",
-        author_image: authorImg,
-        is_published: true,
-        is_priority: isPriority,
-        created_at: new Date()
-    }]);
+            // Sauvegarde locale de l'auteur
+            localStorage.setItem('makmus_author_name', author);
+            localStorage.setItem('makmus_author_img', authorImg);
+
+            let finalCategory = currentCategory;
+            let finalTitle = title;
+
+            if (currentCategory === 'DASHBOARD_SPORT') {
+                const subCat = prompt("Catégorie de stats ? (JO, LIGUE1, NBA, RDC_FOOT)", "JO");
+                if (!subCat) return;
+                finalCategory = subCat.toUpperCase();
+            } 
+            else if (currentCategory === 'SPORT') {
+                const ta = document.getElementById('team-a').value;
+                const tb = document.getElementById('team-b').value;
+                const sa = document.getElementById('score-a').value || 0;
+                const sb = document.getElementById('score-b').value || 0;
+                if(ta && tb) finalTitle = `${ta} ${sa}-${sb} ${tb}`;
+            }
+
+            const { error } = await supabaseClient.from('articles').insert([{
+                titre: finalTitle,
+                description: body,
+                image_url: img,
+                image_caption: caption,
+                category: finalCategory,
+                tags: tags,
+                author_name: author || "Rédaction Makmus",
+                author_image: authorImg,
+                is_published: true,
+                is_priority: isPriority,
+                created_at: new Date()
+            }]);
+
             if(!error) {
-                alert("✅ Article diffusé avec succès !");
+                alert("✅ Publié avec succès !");
                 localStorage.removeItem('makmus_draft');
                 location.reload();
             } else {
-                alert("Erreur Supabase : " + error.message);
+                alert("Erreur : " + error.message);
             }
         }
 
@@ -280,31 +232,15 @@
             };
             localStorage.setItem('makmus_draft', JSON.stringify(draft));
             const d = new Date();
-            document.getElementById('autosave-status').innerText = `Enregistré à ${d.getHours()}h${d.getMinutes().toString().padStart(2, '0')}`;
+            document.getElementById('autosave-status').innerText = `Sauvegardé à ${d.getHours()}h${d.getMinutes().toString().padStart(2, '0')}`;
         }
 
         function openPreview() {
-            const title = document.getElementById('main-title').value || "Titre";
+            const title = document.getElementById('main-title').value || "Sans titre";
             const img = document.getElementById('main-image').value;
-            const caption = document.getElementById('image-caption').value;
             const content = tinymce.get('word-editor').getContent();
-            
             const win = window.open('', '_blank');
-            win.document.write(`
-                <html><head><style>
-                    body { font-family: 'Inter', sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; color: #333; }
-                    .cat { color: #a30000; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; }
-                    img { width: 100%; border-radius: 8px; }
-                    .caption { font-size: 0.8rem; color: #777; margin-top: 8px; text-align: center; font-style: italic; }
-                </style></head><body>
-                    <div class="cat">${currentCategory}</div>
-                    <h1>${title}</h1>
-                    ${img ? `<img src="${img}">` : ''}
-                    ${caption ? `<div class="caption">${caption}</div>` : ''}
-                    <hr>
-                    <div>${content}</div>
-                </body></html>
-            `);
+            win.document.write(`<html><head><title>Aperçu</title><style>body{font-family:sans-serif;max-width:700px;margin:auto;padding:20px;} img{width:100%;}</style></head><body><h1>${title}</h1><img src="${img}">${content}</body></html>`);
         }
 
         window.addEventListener('load', () => {
@@ -318,38 +254,10 @@
                 document.getElementById('main-image').value = draft.image || '';
                 document.getElementById('image-caption').value = draft.caption || '';
                 document.getElementById('main-tags').value = draft.tags || '';
+                setTimeout(() => tinymce.get('word-editor').setContent(draft.content || ''), 1000);
             }
-            setInterval(autoSave, 30000);
+            setInterval(autoSave, 20000);
         });
-        async function loadOpinions() {
-    const opinionList = document.getElementById('opinion-list');
-    if (!opinionList) return;
-
-    // On récupère uniquement la catégorie OPINION
-    const { data: opinions, error } = await supabaseClient
-        .from('articles')
-        .select('*')
-        .eq('category', 'OPINION') // C'est ici que la magie opère
-        .eq('is_published', true)
-        .order('created_at', { ascending: false })
-        .limit(4);
-
-    if (error) return console.error("Erreur opinions:", error);
-
-    if (opinions && opinions.length > 0) {
-        opinionList.innerHTML = opinions.map(op => `
-            <div class="opinion-item" onclick="captureAction('${op.titre.replace(/'/g, "\\'")}', 'Opinion', 'redaction.html?id=${op.id}')">
-                <div class="opinion-item-text">
-                    <span>${op.author_name || 'CHRONIQUEUR'}</span>
-                    <h4>${op.titre}</h4>
-                </div>
-                <img class="opinion-avatar" src="${op.author_image || 'https://via.placeholder.com/40'}" onerror="this.src='https://via.placeholder.com/40'">
-            </div>
-        `).join('');
-    } else {
-        opinionList.innerHTML = "<p style='font-size:0.8rem; color:#999;'>Aucune opinion pour le moment.</p>";
-    }
-}
     </script>
 </body>
 </html>
