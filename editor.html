@@ -2,379 +2,512 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editeur | MAKMUS Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/admin.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MAKMUS — L'excellence du journalisme</title>
+    <meta name="description" content="L actualité en Republique Democratique du Congo. Information, économie, sport, culture et analyses.">
+    <meta name="theme-color" content="#a30000">
     
-    <!-- TinyMCE CDN -->
-    <script src="https://cdn.tiny.cloud/1/ng2hl74s9nvz4xkgo1vpmh1djoqcgx651sxiqitbajvyhy47/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MAKMUS">
+    <meta property="og:title" content="MAKMUS — L'excellence du journalisme">
+    <meta property="og:description" content="L actualité en Republique Democratique du Congo. Information, économie, sport, culture et analyses.">
+    <meta property="og:url" content="https://makmus.com">
+    <meta property="og:image" content="https://i.postimg.cc/x88LbhZp/2-20251224-213424-0001.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@MakMus">
+    <meta name="twitter:title" content="MAKMUS — L'excellence du journalisme">
+    <meta name="twitter:description" content="L actualité en Republique Democratique du Congo.">
+    <meta name="twitter:image" content="https://i.postimg.cc/x88LbhZp/2-20251224-213424-0001.png">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/x88LbhZp/2-20251224-213424-0001.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/FzQ6Jf8K/2-20251224-213424-0001-removebg-preview.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&amp;family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
     
     <style>
-        .editor-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-family: 'Libre Franklin', sans-serif;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            color: #666;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e6e6e6;
-            border-radius: 4px;
-            font-family: 'Lora', serif;
-            font-size: 16px;
-        }
-        
-        .media-group {
-            border: 1px solid #e6e6e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #fafafa;
-        }
-        .media-group-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e6e6e6;
-        }
-        .media-group-title {
-            font-weight: 700;
-            font-size: 13px;
-        }
-        .remove-media-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .add-media-btn {
-            background: #a30000;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            margin-top: 10px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .media-type-select {
-            width: auto;
-            display: inline-block;
-            margin-right: 10px;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            justify-content: flex-end;
-        }
-        .btn-primary {
-            background: #a30000;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            cursor: pointer;
-            border-radius: 4px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-secondary {
-            background: #f5f5f5;
-            color: #333;
-            border: 1px solid #ddd;
-            padding: 12px 24px;
-            cursor: pointer;
-            border-radius: 4px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .status {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+        .ad-main-wrapper {
             display: none;
-        }
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            display: block;
-        }
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            display: block;
-        }
-        .admin-nav {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        .admin-nav a {
-            text-decoration: none;
-            color: #666;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .admin-nav a.active {
-            color: #a30000;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-        .checkbox-group input {
-            width: 18px;
-            height: 18px;
-            margin: 0;
-        }
-        .checkbox-group span {
-            text-transform: none;
-            letter-spacing: normal;
-        }
-        .helper-text {
-            color: #666;
-            display: block;
-            margin-top: 5px;
-            font-size: 12px;
-        }
-        .nav-icon {
-            width: 16px;
-            height: 16px;
-        }
-        .btn-icon {
-            width: 16px;
-            height: 16px;
-        }
-        .small-icon {
-            width: 14px;
-            height: 14px;
-        }
-        .subcategory-option {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
     </style>
 </head>
 <body>
-
-<div class="editor-container">
-    <div class="admin-nav">
-        <a href="dashboard.html">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7"/>
-                <rect x="14" y="3" width="7" height="7"/>
-                <rect x="14" y="14" width="7" height="7"/>
-                <rect x="3" y="14" width="7" height="7"/>
-            </svg>
-            Dashboard
-        </a>
-        <a href="editor.html" class="active">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-            </svg>
-            Editeur
-        </a>
-        <a href="studio.html">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="2" width="20" height="20" rx="2.18"/>
-                <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"/>
-            </svg>
-            Studio
-        </a>
-        <a href="#" id="logout-nav">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
-            </svg>
-            Déconnexion
-        </a>
-    </div>
-    
-    <div id="status-message" class="status"></div>
-    
-    <form id="article-form">
-        <div class="form-group">
-            <label>Titre de l'article</label>
-            <input type="text" id="article-title" placeholder="Titre principal..." required>
+    <!-- MENU PLEIN ÉCRAN -->
+    <div class="full-menu" id="fullMenu">
+        <div class="menu-header">
+            <div class="menu-logo">
+                <img src="https://logphtrdkpbfgtejtime.supabase.co/storage/v1/object/public/Photo,%20Image/Untitled%20folder/MAK_MUS__1_-removebg-preview.png" alt="MAKMUS">
+            </div>
+            <button class="close-menu" onclick="window.toggleMenu(false)">✕ FERMER</button>
         </div>
         
-        <!-- SECTION MÉDIAS UNIQUE -->
-        <div class="form-group">
-            <label>Médias (images/vidéos)</label>
-            <button type="button" id="open-studio-btn" class="btn-secondary" style="margin-bottom: 15px;">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="2" width="20" height="20" rx="2.18"/>
-                    <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"/>
-                </svg>
-                Ouvrir la galerie média
-            </button>
-            <div id="media-list-container">
-                <div id="media-items"></div>
-                <button type="button" class="add-media-btn" id="add-media-btn">
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M5 12h14"/>
-                    </svg>
-                    Ajouter un média
+        <div class="menu-content">
+            <div class="menu-search">
+                <input type="text" id="menuSearchInput" placeholder="RECHERCHER DANS LES ARCHIVES...">
+                <button onclick="if(window.fetchMakmusNews) window.fetchMakmusNews(document.getElementById('menuSearchInput').value); window.toggleMenu(false);">OK</button>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-section">
+                    <h3>ACTUALITÉS</h3>
+                    <ul>
+                        <li><a href="index.html">À la une</a></li>
+                        <li><a href="index.html?cat=RDC">RDC</a></li>
+                        <li><a href="index.html?cat=politique">Politique</a></li>
+                        <li><a href="index.html?cat=international">International</a></li>
+                        <li><a href="index.html?cat=environnement">Environnement</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h3>ÉCONOMIE & TECH</h3>
+                    <ul>
+                        <li><a href="index.html?cat=business">Business</a></li>
+                        <li><a href="index.html?cat=technologie">Technologies</a></li>
+                        <li><a href="index.html?cat=science">Sciences</a></li>
+                        <li><a href="index.html?cat=crypto">Crypto-monnaie</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h3>LOISIRS & SOCIÉTÉ</h3>
+                    <ul>
+                        <li><a href="index.html?cat=sport">Sports</a></li>
+                        <li><a href="index.html?cat=culture">Culture & Musique</a></li>
+                        <li><a href="index.html?cat=sante">Sante</a></li>
+                        <li><a href="index.html?cat=lifestyle">Style de vie / Food</a></li>
+                        <li><a href="index.html?cat=voyages">Voyages</a></li>
+                        <li><a href="jeux.html" class="nav-red">Jeux & Puzzles</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= PUBLICITÉ ================= -->
+    <div class="ad-main-wrapper">
+        <div class="ad-container-wrapper">
+            <div id="ad-display-zone" class="ad-display-zone">
+                <div class="ad-placeholder">
+                    <div class="ad-loader"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <div id="live-date">---</div>
+            <div class="market-ticker-container">
+                <div id="ticker-content"></div>
+            </div>
+            <div class="header-right">
+                <button class="btn-subscribe" onclick="window.location.href='abonnement.html'">faire un don</button>
+                <button id="openModal" onclick="window.toggleSidePanel(true)" aria-label="Mon compte">
+                    <img src="https://img.icons8.com/material-outlined/24/user-male-circle.png" alt="Compte">
                 </button>
             </div>
         </div>
-        
-        <div class="form-group">
-            <label>Resume (chapeau)</label>
-            <textarea id="article-excerpt" rows="3" placeholder="Court resume..."></textarea>
+    </div>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <button class="menu-toggle" onclick="window.toggleMenu(true)" aria-label="Menu">
+            <img src="https://img.icons8.com/material-rounded/24/menu--v1.png" alt="Menu" class="menu-icon">
+            <span class="menu-label">SECTIONS</span>
+        </button>
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="https://i.postimg.cc/7ZWdGrQc/Screenshot-2025-12-24-21-32-24-removebg-preview.png" alt="MAKMUS">
+            </a>
         </div>
+    </header>
+
+    <!-- TRENDING TAGS -->
+    <div id="trending-tags">
+        <div class="trending-container">
+            <span class="trending-label">En ce moment</span>
+            <div id="tags-container" class="tags-list"></div>
+        </div>
+    </div>
+
+    <!-- ================= CONTENU PRINCIPAL ================= -->
+    <main class="newspaper-body">
+        <div class="status-line" id="status-line">EDITION DU JOUR</div>
         
-        <div class="form-group">
-            <label>Catégorie</label>
-            <select id="article-category">
-                <option value="">Sélectionner...</option>
-                <option value="top">À la une</option>
-                <option value="ACTUALITES">Actualités</option>
-                <option value="RDC">RDC</option>
-                <option value="POLITIQUE">Politique</option>
-                <option value="ECONOMIE">Économie</option>
-                <option value="FINANCE">Finance</option>
-                <option value="INTERNATIONAL">International</option>
-                <option value="ENVIRONNEMENT">Environnement</option>
-                <option value="SPORT">Sport</option>
-                <option value="CULTURE">Culture</option>
-                <option value="OPINION">Opinion</option>
-                <option value="LIFESTYLE">Lifestyle</option>
-            </select>
+        <!-- Hero + Sidebar en ligne (2 colonnes) pour DESKTOP -->
+        <div class="hero-sidebar-wrapper">
+            <div id="hero-zone">
+                <div class="hero-flexible"></div>
+            </div>
+            
+            <aside class="sidebar-column sidebar-desktop">
+                <div class="sidebar-heading">TENDANCES</div>
+                <div id="sidebar-list" class="ordered-news-list"></div>
+                
+                <div class="slider-nav">
+                    <button class="nav-btn prev" onclick="window.moveSlide(-1)" aria-label="Précédent">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="nav-btn next" onclick="window.moveSlide(1)" aria-label="Suivant">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="section-title">OPINION</h3>
+                    <div id="opinion-list" class="opinion-list"></div>
+                    <div class="opinion-footer">
+                        <a href="mailto:contact@makmus.com?subject=Proposition%20de%20Chronique" class="discreet-link">
+                            Devenir chroniqueur <span class="arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </aside>
         </div>
 
-        <div class="form-group">
-            <label class="checkbox-group">
-                <input type="checkbox" id="article-priority">
-                <span>Mettre cet article à la une (Hero)</span>
-            </label>
-            <small class="helper-text">Cochez cette case pour que l'article apparaisse en priorité dans le hero</small>
+        <!-- Sections -->
+        <section id="economy-section" class="magazine-section">
+            <div class="section-header">
+                <h2 class="section-title">ÉCONOMIE & FINANCE</h2>
+                <nav class="subsection-nav">
+                    <span data-category="marches">Marchés</span>
+                    <span data-category="bourse">Bourse</span>
+                    <span data-category="tech">Tech</span>
+                    <span data-category="cryptos">Cryptos</span>
+                    <span data-category="immobilier">Immobilier</span>
+                </nav>
+            </div>
+            <div id="economy-grid"></div>
+        </section>
+
+        <section id="international-section" class="magazine-section">
+            <div class="section-header">
+                <h2 class="section-title">INTERNATIONAL</h2>
+                <nav class="subsection-nav international-nav">
+                    <span data-category="afrique">Afrique</span>
+                    <span data-category="europe">Europe</span>
+                    <span data-category="ameriques">Amériques</span>
+                    <span data-category="asie">Asie</span>
+                    <span data-category="moyen-orient">Moyen-Orient</span>
+                </nav>
+            </div>
+            <div id="international-grid"></div>
+        </section>
+
+        <section id="environnement-section" class="magazine-section">
+            <div class="section-header">
+                <h2 class="section-title">ENVIRONNEMENT</h2>
+                <nav class="subsection-nav environnement-nav">
+                    <span data-category="climat">Climat</span>
+                    <span data-category="biodiversite">Biodiversité</span>
+                    <span data-category="energie">Énergie</span>
+                    <span data-category="pollution">Pollution</span>
+                    <span data-category="innovation">Innovation verte</span>
+                </nav>
+            </div>
+            <div id="environnement-grid"></div>
+        </section>
+
+        <section id="sport-section" class="magazine-section">
+            <div class="section-header">
+                <h2 class="section-title">SPORT</h2>
+                <nav class="subsection-nav sport-nav-categories">
+                    <span data-sport="football">Football</span>
+                    <span data-sport="basketball">Basketball</span>
+                    <span data-sport="tennis">Tennis</span>
+                    <span data-sport="combat">Combat</span>
+                    <span data-sport="e-sport">E-Sport</span>
+                </nav>
+            </div>
+            <div id="sport-grid"></div>
+        </section>
+
+        <div class="newspaper-layout-single">
+            <div class="main-news-column">
+                <div id="news-grid" class="news-grid"></div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Sous-catégorie / Région (pour International)</label>
-            <select id="article-subcategory">
-                <option value="">Sélectionner...</option>
-                <option value="Afrique">Afrique</option>
-                <option value="Europe">Europe</option>
-                <option value="Amériques">Amériques</option>
-                <option value="Asie">Asie</option>
-                <option value="Moyen-Orient">Moyen-Orient</option>
-                <option value="Océanie">Océanie</option>
-                <option value="ENVIRONNEMENT">Environnement</option>
-                <option value="CLIMAT">Climat</option>
-                <option value="ECOLOGIE">Écologie</option>
-            </select>
-            <small class="helper-text">Utilisé pour le filtrage dans la section International</small>
-        </div>
-        
-        <div class="form-group">
-            <label>Slug (URL personnalisée)</label>
-            <input type="text" id="article-slug" placeholder="ex: mon-article-personnalise">
-            <small style="color:#666; display:block; margin-top:5px;">Laissez vide pour génération automatique.</small>
-        </div>
-        
-        <div class="form-group">
-            <label>Nom de l'auteur</label>
-            <input type="text" id="author-name" placeholder="Ex: Jean Dupont">
-        </div>
-        
-        <div class="form-group">
-            <label>Photo de l'auteur (URL)</label>
-            <input type="text" id="author-image" placeholder="https://...">
-            <small class="helper-text">URL de l'avatar de l'auteur</small>
-        </div>
+        <aside class="sidebar-column sidebar-mobile">
+            <div class="sidebar-heading">TENDANCES</div>
+            <div id="sidebar-list-mobile" class="ordered-news-list"></div>
+            
+            <div class="slider-nav">
+                <button class="nav-btn prev" onclick="window.moveSlide(-1)" aria-label="Précédent">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <button class="nav-btn next" onclick="window.moveSlide(1)" aria-label="Suivant">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
 
-        <div class="form-group">
-            <label>Tags (séparés par des virgules)</label>
-            <input type="text" id="article-tags" placeholder="ex: politique, économie, RDC">
-        </div>
-        
-        <div class="form-group">
-            <label>Image à la une (URL)</label>
-            <input type="text" id="article-image" placeholder="https://...">
-            <small class="helper-text">Laissez vide si pas d'image</small>
-        </div>
-        
-        <div class="form-group">
-            <label>Vidéo à la une (URL)</label>
-            <input type="text" id="article-video" placeholder="https://... (mp4, webm)">
-            <small class="helper-text">Si renseigné, la vidéo sera prioritaire sur l'image</small>
-        </div>
-        
-        <div class="form-group">
-            <label>Légende de l'image/vidéo</label>
-            <input type="text" id="article-image-caption" placeholder="Description...">
-        </div>
-        
-        <div class="form-group">
-            <label>Contenu de l'article</label>
-            <textarea id="article-content"></textarea>
-        </div>
-        
-        <div class="action-buttons">
-            <button type="button" class="btn-secondary" id="preview-btn">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                </svg>
-                Apercu
-            </button>
-            <button type="button" class="btn-secondary" id="draft-btn">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                    <path d="M17 21v-4H7v4M12 7v6M9 10h6"/>
-                </svg>
-                Sauvegarder brouillon
-            </button>
-            <button type="button" class="btn-primary" id="publish-btn">
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                Publier
-            </button>
-        </div>
-    </form>
-</div>
+            <div class="sidebar-section">
+                <h3 class="section-title">OPINION</h3>
+                <div id="opinion-list-mobile" class="opinion-list"></div>
+                <div class="opinion-footer">
+                    <a href="mailto:contact@makmus.com?subject=Proposition%20de%20Chronique" class="discreet-link">
+                        Devenir chroniqueur <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/auth.js"></script>
-<script src="js/editor.js"></script>
+    <!-- VIDEOS DU JOUR -->
+    <section id="video-section" class="video-section">
+        <div class="standard-section-header">
+            <h2 class="section-label">Videos du jour</h2>
+        </div>
+        <div class="video-slider-wrapper">
+            <div id="video-slider" class="video-slider"></div>
+            <div class="slider-controls-container">
+                <div class="slider-dots" id="video-dots"></div>
+                <div class="slider-nav-arrows">
+                    <button class="nav-arrow-btn" onclick="window.scrollVideoSlider(-300)">❮</button>
+                    <button class="nav-arrow-btn" onclick="window.scrollVideoSlider(300)">❯</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIFESTYLE -->
+    <section id="lifestyle-section" class="magazine-section">
+        <div class="section-header">
+            <h2 class="section-title">Lifestyle & bien-être</h2>
+        </div>
+        <div id="lifestyle-grid"></div>
+    </section>
+
+    <!-- AUDIO SECTION -->
+    <section class="audio-section">
+        <div class="section-header">
+            <h2 class="section-title">Audio <span class="subtitle">Podcasts et articles lus</span></h2>
+        </div>
+        <div id="audio-grid" class="audio-grid"></div>
+    </section>
+
+    <!-- Widget Audio Flottant -->
+    <div id="audio-widget" class="audio-widget" style="display: none;">
+        <div class="audio-widget-content">
+            <div class="audio-widget-info">
+                <img id="widget-cover" src="" alt="Cover">
+                <div class="audio-widget-details">
+                    <span id="widget-title">Titre</span>
+                    <span id="widget-source">Source</span>
+                </div>
+            </div>
+            <div class="audio-widget-controls">
+                <button id="widget-prev" class="widget-btn">⏮</button>
+                <button id="widget-play" class="widget-btn play-btn">▶</button>
+                <button id="widget-next" class="widget-btn">⏭</button>
+                <button id="widget-close" class="widget-btn close-btn">✕</button>
+            </div>
+            <div class="audio-widget-progress">
+                <span id="widget-current">0:00</span>
+                <div class="progress-bar">
+                    <div id="widget-progress-fill" class="progress-fill"></div>
+                </div>
+                <span id="widget-duration">0:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLUS D'INFO -->
+    <section class="more-info-section">
+        <div class="section-divider-double"></div>
+        <h2 class="section-main-title">PLUS D'INFO</h2>
+        <div id="more-info-grid" class="more-info-grid"></div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="nyt-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="https://logphtrdkpbfgtejtime.supabase.co/storage/v1/object/public/Photo,%20Image/Untitled%20folder/MAK_MUS__1_-removebg-preview.png" alt="MAKMUS">
+                <p>La verite pour memoire. L'excellence du journalisme en Republique Democratique du Congo.</p>
+            </div>
+            <div class="footer-links-grid">
+                <div class="footer-col">
+                    <h4>SECTIONS</h4>
+                    <ul>
+                        <li><a href="index.html">A LA UNE</a></li>
+                        <li><a href="index.html?cat=RDC">RDC</a></li>
+                        <li><a href="index.html?cat=politique">POLITIQUE</a></li>
+                        <li><a href="index.html?cat=business">ECONOMIE</a></li>
+                        <li><a href="index.html?cat=sport">SPORT</a></li>
+                        <li><a href="index.html?cat=sante">SANTE</a></li>
+                        <li><a href="index.html?cat=environnement">CLIMAT</a></li>
+                        <li><a href="index.html?cat=voyages">VOYAGES</a></li>
+                        <li><a href="jeux.html" class="nav-red">JEUX</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>AIDE</h4>
+                    <ul>
+                        <li><a href="#">Abonnements</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Publicite</a></li>
+                        <li><a href="#">Emploi</a></li>
+                        <li><a href="#">Makmus magazine</a></li>
+                        <li><a href="#">Makila Emmanuel Heritage</a></li>
+                        <li><a href="#">Meteo</a></li>
+                        <li><a href="#">Makem screen Studio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>SUIVEZ-NOUS</h4>
+                    <div class="social-links">
+                        <a href="#" title="Facebook">FB</a>
+                        <a href="#" title="X (Twitter)">X</a>
+                        <a href="#" title="Instagram">IG</a>
+                        <a href="#" title="YouTube">YT</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 MAKMUS MEDIA GROUP. Tous droits reserves.</p>
+                <div class="bottom-legal">
+                    <a href="#">Mentions Legales</a>
+                    <a href="#">Confidentialite</a>
+                    <a href="#">CGU</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SIDE PANEL (COMPTE) -->
+    <div id="sideAccount" class="side-panel">
+        <div class="side-panel-overlay" onclick="window.toggleSidePanel(false)"></div>
+        <div class="side-panel-content">
+            <div class="side-panel-header">
+                <div class="logo-small">MAKMUS</div>
+                <button class="close-panel" onclick="window.toggleSidePanel(false)">&times;</button>
+            </div>
+            <div class="side-panel-body">
+                <div id="logged-out-view">
+                    <h2 class="premium-title">Bonjour.</h2>
+                    <p class="premium-subtitle">Connectez-vous pour sauvegarder des articles.</p>
+                    <div class="auth-form">
+                        <input type="email" id="auth-email" placeholder="Email" class="premium-input" autocomplete="email">
+                        <input type="password" id="auth-password" placeholder="Mot de passe" class="premium-input" autocomplete="current-password">
+                        <button class="btn-black-full" id="auth-submit-btn">CONTINUER</button>
+                        <p class="auth-divider"><span>OU</span></p>
+                        <button class="btn-outline-full" id="auth-toggle-btn">CREER UN COMPTE</button>
+                    </div>
+                    <p id="auth-mode-text" style="text-align: center; margin-top: 15px; font-size: 0.7rem; color: #888;"></p>
+                </div>
+                <div id="logged-in-view" style="display: none;">
+                    <div class="user-profile-header">
+                        <div class="user-avatar">M</div>
+                        <div class="user-meta">
+                            <span id="user-email-display" class="user-email">...</span>
+                            <span class="user-status">Membre Premium</span>
+                        </div>
+                    </div>
+                    <nav class="side-nav">
+                        <div class="nav-group-label">VOTRE ACTIVITE</div>
+                        <a href="javascript:void(0)" class="nav-item" onclick="window.navigateToAccountOption('favoris')">Articles favoris</a>
+                        <a href="javascript:void(0)" class="nav-item" onclick="window.navigateToAccountOption('commentaires')">Vos commentaires</a>
+                        <div class="favorites-recent-wrapper">
+                            <div class="nav-group-label">VOS FAVORIS RÉCENTS</div>
+                            <div id="user-favorites-list"></div>
+                        </div>                    
+                        <button class="btn-logout-link" onclick="window.handleLogout()">Se deconnecter</button>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.log('Erreur PWA', err);
+                });
+            });
+        }
+    </script>
+
+    <script>
+        (async function updateDynamicMetaTags() {
+            function setMetaTag(attribute, content, isProperty) {
+                isProperty = isProperty !== false;
+                var selector = isProperty ? 'meta[property="' + attribute + '"]' : 'meta[name="' + attribute + '"]';
+                var meta = document.querySelector(selector);
+                if (!meta) {
+                    meta = document.createElement('meta');
+                    if (isProperty) {
+                        meta.setAttribute('property', attribute);
+                    } else {
+                        meta.setAttribute('name', attribute);
+                    }
+                    document.head.appendChild(meta);
+                }
+                meta.setAttribute('content', content);
+            }
+            
+            var DEFAULT_IMAGE = 'https://logphtrdkpbfgtejtime.supabase.co/storage/v1/object/public/Photo,%20Image/Untitled%20folder/MAK_MUS__1_-removebg-preview.png';
+            
+            try {
+                if (typeof supabaseClient !== 'undefined') {
+                    var { data: articles } = await supabaseClient
+                        .from('articles')
+                        .select('*')
+                        .eq('is_published', true)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                    
+                    if (articles && articles.length > 0) {
+                        var article = articles[0];
+                        var articleTitle = article.titre + ' | MAKMUS';
+                        var articleDesc = (article.description || '').replace(/<[^>]*>/g, '').substring(0, 300);
+                        var articleImage = article.image_url || DEFAULT_IMAGE;
+                        var articleUrl = window.location.href;
+                        
+                        document.title = articleTitle;
+                        
+                        var metaDesc = document.querySelector('meta[name="description"]');
+                        if (metaDesc) metaDesc.setAttribute('content', articleDesc);
+                        
+                        setMetaTag('og:title', articleTitle, true);
+                        setMetaTag('og:description', articleDesc, true);
+                        setMetaTag('og:image', articleImage, true);
+                        setMetaTag('og:url', articleUrl, true);
+                        setMetaTag('twitter:title', articleTitle, false);
+                        setMetaTag('twitter:description', articleDesc, false);
+                        setMetaTag('twitter:image', articleImage, false);
+                        
+                        console.log('✅ Meta tags mis à jour avec:', article.titre);
+                    }
+                }
+            } catch (error) {
+                console.warn('Erreur meta tags:', error);
+            }
+        })();
+    </script>
 </body>
 </html>
