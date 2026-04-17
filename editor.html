@@ -40,7 +40,6 @@
             font-size: 16px;
         }
         
-        /* Styles pour les médias multiples */
         .media-group {
             border: 1px solid #e6e6e6;
             border-radius: 8px;
@@ -234,6 +233,7 @@
             <input type="text" id="article-title" placeholder="Titre principal..." required>
         </div>
         
+        <!-- SECTION MÉDIAS UNIQUE -->
         <div class="form-group">
             <label>Médias (images/vidéos)</label>
             <button type="button" id="open-studio-btn" class="btn-secondary" style="margin-bottom: 15px;">
@@ -249,7 +249,7 @@
                     <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
-                    Ajouter un média manuellement
+                    Ajouter un média
                 </button>
             </div>
         </div>
@@ -278,7 +278,6 @@
             </select>
         </div>
 
-        <!-- Case à cocher pour le Hero -->
         <div class="form-group">
             <label class="checkbox-group">
                 <input type="checkbox" id="article-priority">
@@ -291,93 +290,15 @@
             <label>Sous-catégorie / Région (pour International)</label>
             <select id="article-subcategory">
                 <option value="">Sélectionner...</option>
-                <option value="Afrique">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                        </svg>
-                        Afrique
-                    </span>
-                </option>
-                <option value="Europe">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 2a10 10 0 0 0 0 20"/>
-                            <path d="M12 2a10 10 0 0 1 0 20"/>
-                        </svg>
-                        Europe
-                    </span>
-                </option>
-                <option value="Amériques">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M2 12h20"/>
-                            <path d="M12 2a8 8 0 0 0 0 20"/>
-                        </svg>
-                        Amériques
-                    </span>
-                </option>
-                <option value="Asie">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 2a8 8 0 0 1 0 20"/>
-                            <path d="M2 12h20"/>
-                        </svg>
-                        Asie
-                    </span>
-                </option>
-                <option value="Moyen-Orient">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v20M2 12h20"/>
-                            <circle cx="12" cy="12" r="10"/>
-                        </svg>
-                        Moyen-Orient
-                    </span>
-                </option>
-                <option value="Océanie">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 2v20"/>
-                            <path d="M2 12h20"/>
-                            <circle cx="12" cy="12" r="4"/>
-                        </svg>
-                        Océanie
-                    </span>
-                </option>
-                <option value="ENVIRONNEMENT">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        Environnement
-                    </span>
-                </option>
-                <option value="CLIMAT">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M8 8l-2-2M16 16l2 2"/>
-                        </svg>
-                        Climat
-                    </span>
-                </option>
-                <option value="ECOLOGIE">
-                    <span class="subcategory-option">
-                        <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                            <path d="M12 8a4 4 0 0 0-4 4"/>
-                        </svg>
-                        Écologie
-                    </span>
-                </option>
+                <option value="Afrique">Afrique</option>
+                <option value="Europe">Europe</option>
+                <option value="Amériques">Amériques</option>
+                <option value="Asie">Asie</option>
+                <option value="Moyen-Orient">Moyen-Orient</option>
+                <option value="Océanie">Océanie</option>
+                <option value="ENVIRONNEMENT">Environnement</option>
+                <option value="CLIMAT">Climat</option>
+                <option value="ECOLOGIE">Écologie</option>
             </select>
             <small class="helper-text">Utilisé pour le filtrage dans la section International</small>
         </div>
@@ -385,9 +306,7 @@
         <div class="form-group">
             <label>Slug (URL personnalisée)</label>
             <input type="text" id="article-slug" placeholder="ex: mon-article-personnalise">
-            <small style="color:#666; display:block; margin-top:5px;">
-                Laissez vide pour génération automatique. Exemple: /article/mon-article-personnalise
-            </small>
+            <small style="color:#666; display:block; margin-top:5px;">Laissez vide pour génération automatique.</small>
         </div>
         
         <div class="form-group">
@@ -406,7 +325,6 @@
             <input type="text" id="article-tags" placeholder="ex: politique, économie, RDC">
         </div>
         
-        <!-- Image et Vidéo à la une -->
         <div class="form-group">
             <label>Image à la une (URL)</label>
             <input type="text" id="article-image" placeholder="https://...">
@@ -422,22 +340,6 @@
         <div class="form-group">
             <label>Légende de l'image/vidéo</label>
             <input type="text" id="article-image-caption" placeholder="Description...">
-        </div>
-        
-        <!-- SECTION MÉDIAS MULTIPLES -->
-        <div class="form-group">
-            <label>Médias (images/vidéos)</label>
-            <div id="media-list-container">
-                <div id="media-items">
-                    <!-- Les médias seront ajoutés ici dynamiquement -->
-                </div>
-                <button type="button" class="add-media-btn" id="add-media-btn-duplicate">
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M5 12h14"/>
-                    </svg>
-                    Ajouter un média
-                </button>
-            </div>
         </div>
         
         <div class="form-group">

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   EDITEUR TINYMCE - MAKMUS (VERSION COMPLÈTE AVEC SLUG)
+   EDITEUR TINYMCE - MAKMUS (VERSION CORRIGÉE - SANS DOUBLONS)
    ========================================================================== */
 
 var editor = null;
@@ -16,18 +16,15 @@ currentArticleId = urlParams.get('id');
 function generateSlug(title, id) {
     if (!title) return '';
     
-    // Supprimer les accents
     var withoutAccents = title
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '');
     
-    // Remplacer les espaces et caractères spéciaux par des tirets
     var slug = withoutAccents
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
     
-    // Ajouter un identifiant court pour garantir l'unicité
     var shortId;
     if (id && id !== 'null' && id !== 'undefined') {
         shortId = id.replace(/-/g, '').substring(0, 8);
@@ -35,7 +32,7 @@ function generateSlug(title, id) {
         shortId = Date.now().toString().substring(0, 8);
     }
     
-    return `${slug}-${shortId}`;
+    return slug + '-' + shortId;
 }
 
 function validateSlug(slug) {
@@ -47,31 +44,37 @@ function validateSlug(slug) {
    -------------------------------------- */
 function addMediaItem(mediaData) {
     var container = document.getElementById('media-items');
+    if (!container) return;
+    
     var index = mediaCount++;
     
-    var mediaHtml = `
-        <div class="media-group" data-index="${index}">
-            <div class="media-group-header">
-                <span class="media-group-title">Média ${index + 1}</span>
-                <button type="button" class="remove-media-btn" onclick="removeMediaItem(${index})">Supprimer</button>
-            </div>
-            <div class="form-group">
-                <label>Type</label>
-                <select class="media-type-select" data-field="type" data-index="${index}">
-                    <option value="image" ${mediaData && mediaData.type === 'image' ? 'selected' : ''}>Image</option>
-                    <option value="video" ${mediaData && mediaData.type === 'video' ? 'selected' : ''}>Vidéo</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>URL du média</label>
-                <input type="text" class="media-url" data-field="url" data-index="${index}" value="${mediaData ? (mediaData.url || '') : ''}" placeholder="https://...">
-            </div>
-            <div class="form-group">
-                <label>Légende / Crédit</label>
-                <input type="text" class="media-caption" data-field="caption" data-index="${index}" value="${mediaData ? (mediaData.caption || '') : ''}" placeholder="Description...">
-            </div>
-        </div>
-    `;
+    var mediaHtml = '<div class="media-group" data-index="' + index + '">' +
+        '<div class="media-group-header">' +
+            '<span class="media-group-title">Média ' + (index + 1) + '</span>' +
+            '<button type="button" class="remove-media-btn" onclick="removeMediaItem(' + index + ')">' +
+                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                    '<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>' +
+                    '<line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>' +
+                '</svg>' +
+                'Supprimer' +
+            '</button>' +
+        '</div>' +
+        '<div class="form-group">' +
+            '<label>Type</label>' +
+            '<select class="media-type-select" data-field="type" data-index="' + index + '">' +
+                '<option value="image"' + (mediaData && mediaData.type === 'image' ? ' selected' : '') + '>Image</option>' +
+                '<option value="video"' + (mediaData && mediaData.type === 'video' ? ' selected' : '') + '>Vidéo</option>' +
+            '</select>' +
+        '</div>' +
+        '<div class="form-group">' +
+            '<label>URL du média</label>' +
+            '<input type="text" class="media-url" data-field="url" data-index="' + index + '" value="' + (mediaData ? (mediaData.url || '') : '') + '" placeholder="https://...">' +
+        '</div>' +
+        '<div class="form-group">' +
+            '<label>Légende / Crédit</label>' +
+            '<input type="text" class="media-caption" data-field="caption" data-index="' + index + '" value="' + (mediaData ? (mediaData.caption || '') : '') + '" placeholder="Description...">' +
+        '</div>' +
+    '</div>';
     
     container.insertAdjacentHTML('beforeend', mediaHtml);
 }
@@ -83,7 +86,8 @@ function removeMediaItem(index) {
 
 function getAllMedias() {
     var medias = [];
-    var mediaGroups = document.querySelectorAll('.media-group');
+    // ✅ Utiliser uniquement le conteneur #media-items
+    var mediaGroups = document.querySelectorAll('#media-items .media-group');
     
     for (var i = 0; i < mediaGroups.length; i++) {
         var group = mediaGroups[i];
@@ -107,8 +111,13 @@ function getAllMedias() {
 function loadMediasFromArticle(medias) {
     if (!medias || medias.length === 0) return;
     
+    // ✅ Réinitialiser le compteur pour éviter les conflits
+    mediaCount = 0;
+    
     for (var i = 0; i < medias.length; i++) {
-        addMediaItem(medias[i]);
+        if (medias[i].url && medias[i].url.trim() !== '') {
+            addMediaItem(medias[i]);
+        }
     }
 }
 
@@ -120,7 +129,7 @@ function initEditor() {
         selector: '#article-content',
         height: 500,
         width: '100%',
-        plugins: ['advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'media', 'table', 'emoticons', 'help'],
+        plugins: 'advlist autolink link image lists charmap preview anchor searchreplace wordcount visualblocks code fullscreen media table emoticons help',
         toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright | bullist numlist | link image | preview fullscreen',
         menubar: 'file edit view insert format tools table help',
         
@@ -206,11 +215,17 @@ async function loadArticle(id) {
         document.getElementById('article-video').value = data.video_url || '';
         document.getElementById('article-priority').checked = data.is_priority === true;
         
-        // Afficher le slug dans un champ (optionnel)
         var slugField = document.getElementById('article-slug');
         if (slugField && data.slug) {
             slugField.value = data.slug;
         }
+        
+        // ✅ Nettoyer le conteneur avant de charger
+        var mediaContainer = document.getElementById('media-items');
+        if (mediaContainer) {
+            mediaContainer.innerHTML = '';
+        }
+        mediaCount = 0;
         
         if (data.medias && data.medias.length > 0) {
             loadMediasFromArticle(data.medias);
@@ -264,21 +279,16 @@ async function saveArticle(status) {
         return;
     }
     
-    // Générer le slug
-    let slug;
-    
-    // Vérifier si un slug personnalisé a été saisi
+    var slug;
     var customSlug = document.getElementById('article-slug')?.value;
     
     if (customSlug && customSlug.trim() !== '') {
-        // Utiliser le slug personnalisé
         slug = customSlug
             .toLowerCase()
             .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/^-|-$/g, '');
     } else if (currentArticleId) {
-        // Pour un article existant, garder le slug actuel
         try {
             var { data: existing } = await supabaseClient
                 .from('articles')
@@ -294,11 +304,9 @@ async function saveArticle(status) {
             slug = generateSlug(title, currentArticleId);
         }
     } else {
-        // Nouvel article : générer le slug
         slug = generateSlug(title, null);
     }
     
-    // Vérifier l'unicité du slug (pour les nouveaux articles ou changement de titre)
     if (!currentArticleId || (customSlug && customSlug !== '')) {
         try {
             var { data: existingSlug } = await supabaseClient
@@ -308,7 +316,6 @@ async function saveArticle(status) {
                 .neq('id', currentArticleId || '');
             
             if (existingSlug && existingSlug.length > 0) {
-                // Slug existe déjà, ajouter un timestamp
                 slug = slug + '-' + Date.now().toString().substring(0, 6);
                 showToast('Slug modifié pour éviter les doublons', 'info');
             }
@@ -332,7 +339,7 @@ async function saveArticle(status) {
             image_url: imageUrl,
             image_caption: imageCaption,
             video_url: videoUrl,
-            author_name: authorName || currentUser?.email?.split('@')[0] || 'Rédaction',
+            author_name: authorName || (currentUser?.email?.split('@')[0]) || 'Rédaction',
             author_image: authorImage || null,
             is_priority: isPriority,
             status: status,
@@ -365,8 +372,8 @@ async function saveArticle(status) {
         if (result.error) throw result.error;
         
         var successMessage = status === 'published' 
-            ? '✅ Article publié avec succès !\nURL: /article/' + slug 
-            : '📝 Brouillon sauvegardé !';
+            ? 'Article publié avec succès !\nURL: /article/' + slug 
+            : 'Brouillon sauvegardé !';
         showToast(successMessage, 'success');
         
         if (status === 'published') {
@@ -412,9 +419,6 @@ function previewArticle() {
     previewWindow.document.close();
 }
 
-/* --------------------------------------
-   TOAST NOTIFICATION
-   -------------------------------------- */
 function showToast(message, type) {
     type = type || 'success';
     
@@ -441,46 +445,32 @@ function showToast(message, type) {
 }
 
 var style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(100px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    .editor-toast {
-        animation: slideIn 0.3s ease;
-    }
-`;
+style.textContent = '@keyframes slideIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } } .editor-toast { animation: slideIn 0.3s ease; }';
 document.head.appendChild(style);
+
 // Ouvrir le studio pour insérer des médias
 var openStudioBtn = document.getElementById('open-studio-btn');
 if (openStudioBtn) {
     openStudioBtn.addEventListener('click', function() {
-        // Sauvegarder l'état actuel
         sessionStorage.setItem('editor_return_url', window.location.href);
         window.location.href = 'studio.html?select=true';
     });
 }
 
 // Vérifier si on revient du studio avec des médias sélectionnés
-var urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('insert') === 'true') {
+var urlParamsStudio = new URLSearchParams(window.location.search);
+if (urlParamsStudio.get('insert') === 'true') {
     var urls = sessionStorage.getItem('inserted_media_urls');
     if (urls) {
         var mediaUrls = JSON.parse(urls);
         for (var i = 0; i < mediaUrls.length; i++) {
-            // Ajouter un média dans l'éditeur
             addMediaItem({ type: 'image', url: mediaUrls[i], caption: '' });
         }
         sessionStorage.removeItem('inserted_media_urls');
         showToast(mediaUrls.length + ' média(s) ajouté(s)', 'success');
     }
 }
+
 /* --------------------------------------
    INITIALISATION
    -------------------------------------- */
@@ -510,5 +500,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (publishBtn) publishBtn.addEventListener('click', function() { saveArticle('published'); });
     if (draftBtn) draftBtn.addEventListener('click', function() { saveArticle('draft'); });
     if (previewBtn) previewBtn.addEventListener('click', previewArticle);
-    if (logoutBtn) logoutBtn.addEventListener('click', logout);
+    if (logoutBtn) logoutBtn.addEventListener('click', function() {
+        supabaseClient.auth.signOut();
+        window.location.href = 'login.html';
+    });
 });
