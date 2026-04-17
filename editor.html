@@ -287,22 +287,14 @@
         </div>
 
         <div class="form-group">
-            <label>Sous-catégorie / Région (pour International)</label>
-            <select id="article-subcategory">
-                <option value="">Sélectionner...</option>
-                <option value="Afrique">Afrique</option>
-                <option value="Europe">Europe</option>
-                <option value="Amériques">Amériques</option>
-                <option value="Asie">Asie</option>
-                <option value="Moyen-Orient">Moyen-Orient</option>
-                <option value="Océanie">Océanie</option>
-                <option value="ENVIRONNEMENT">Environnement</option>
-                <option value="CLIMAT">Climat</option>
-                <option value="ECOLOGIE">Écologie</option>
-            </select>
-            <small class="helper-text">Utilisé pour le filtrage dans la section International</small>
-        </div>
-        
+    <label>Sous-catégorie / Thème</label>
+    <input type="text" id="article-subcategory" 
+           placeholder="Ex: crise du pétrole, guerre en Ukraine, Ligue des Champions, élections 2025...">
+    <small class="helper-text">
+         Entrez une sous-catégorie libre (ex: "crise du pétrole", "guerre", "Ligue des Champions").
+        Ces valeurs apparaîtront automatiquement dans le sous-menu.
+    </small>
+</div>        
         <div class="form-group">
             <label>Slug (URL personnalisée)</label>
             <input type="text" id="article-slug" placeholder="ex: mon-article-personnalise">
