@@ -10,7 +10,7 @@
     <script src="https://cdn.tiny.cloud/1/ng2hl74s9nvz4xkgo1vpmh1djoqcgx651sxiqitbajvyhy47/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     
     <style>
-        /* Styles intégrés pour éviter les problèmes de chemin CSS */
+        /* Styles intégrés */
         * {
             margin: 0;
             padding: 0;
@@ -62,6 +62,77 @@
             border-color: #a30000;
         }
 
+        /* Accordéon / Tiroir */
+        .accordion-section {
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: white;
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            cursor: pointer;
+            background: #fafafa;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background: #f0f0f0;
+        }
+
+        .accordion-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .accordion-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-title {
+            font-family: 'Libre Franklin', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #333;
+        }
+
+        .accordion-badge {
+            background: #a30000;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-family: 'Libre Franklin', sans-serif;
+            font-weight: 600;
+        }
+
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .accordion-content.open {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        /* Media groups */
         .media-group {
             border: 1px solid #e6e6e6;
             border-radius: 8px;
@@ -264,7 +335,19 @@
             height: 14px;
         }
 
-        /* Toast notification */
+        .scheduled-info {
+            background: #e8f4fd;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 12px;
+            font-family: 'Libre Franklin', sans-serif;
+            color: #0066cc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(100px); }
             to { opacity: 1; transform: translateX(0); }
@@ -317,7 +400,7 @@
             <input type="text" id="article-title" placeholder="Titre principal..." required>
         </div>
         
-        <!-- SECTION MÉDIAS UNIQUE -->
+        <!-- SECTION MÉDIAS -->
         <div class="form-group">
             <label>Médias (images/vidéos)</label>
             <button type="button" id="open-studio-btn" class="btn-secondary" style="margin-bottom: 15px;">
@@ -339,10 +422,49 @@
         </div>
         
         <div class="form-group">
-            <label>Resume (chapeau)</label>
-            <textarea id="article-excerpt" rows="3" placeholder="Court resume..."></textarea>
+            <label>Résumé (chapeau)</label>
+            <textarea id="article-excerpt" rows="3" placeholder="Court résumé..."></textarea>
         </div>
-        
+
+        <!-- ACCORDÉON PROGRAMMATION -->
+        <div class="accordion-section">
+            <div class="accordion-header" id="scheduling-accordion">
+                <div class="accordion-header-left">
+                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                        <circle cx="12" cy="15" r="1"/>
+                        <circle cx="16" cy="15" r="1"/>
+                        <circle cx="8" cy="15" r="1"/>
+                    </svg>
+                    <span class="accordion-title">Programmation</span>
+                    <span class="accordion-badge" id="scheduled-badge" style="display:none;">Programmé</span>
+                </div>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="scheduling-content">
+                <div class="form-group">
+                    <label>Date et heure de publication</label>
+                    <input type="datetime-local" id="scheduled-publish-date">
+                    <small class="helper-text">
+                        Laissez vide pour une publication immédiate. Remplissez pour programmer l'article.
+                    </small>
+                </div>
+                <div id="scheduled-info" class="scheduled-info" style="display: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span id="scheduled-info-text"></span>
+                </div>
+            </div>
+        </div>
+
         <div class="form-group">
             <label>Catégorie</label>
             <select id="article-category">
@@ -375,8 +497,7 @@
             <input type="text" id="article-subcategory" 
                    placeholder="Ex: crise du pétrole, guerre en Ukraine, Ligue des Champions, élections 2025...">
             <small class="helper-text">
-                ⚡ Entrez une sous-catégorie libre (ex: "crise du pétrole", "guerre", "Ligue des Champions").
-                Ces valeurs apparaîtront automatiquement dans le sous-menu.
+                Entrez une sous-catégorie libre. Ces valeurs apparaîtront automatiquement dans le sous-menu.
             </small>
         </div>        
         
@@ -386,37 +507,71 @@
             <small class="helper-text">Laissez vide pour génération automatique.</small>
         </div>
         
-        <div class="form-group">
-            <label>Nom de l'auteur</label>
-            <input type="text" id="author-name" placeholder="Ex: Jean Dupont">
-        </div>
-        
-        <div class="form-group">
-            <label>Photo de l'auteur (URL)</label>
-            <input type="text" id="author-image" placeholder="https://...">
-            <small class="helper-text">URL de l'avatar de l'auteur</small>
+        <!-- ACCORDÉON MÉTADONNÉES (Auteur, Tags, etc.) -->
+        <div class="accordion-section">
+            <div class="accordion-header" id="metadata-accordion">
+                <div class="accordion-header-left">
+                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span class="accordion-title">Auteur & Métadonnées</span>
+                </div>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="metadata-content">
+                <div class="form-group">
+                    <label>Nom de l'auteur</label>
+                    <input type="text" id="author-name" placeholder="Ex: Jean Dupont">
+                </div>
+                
+                <div class="form-group">
+                    <label>Photo de l'auteur (URL)</label>
+                    <input type="text" id="author-image" placeholder="https://...">
+                    <small class="helper-text">URL de l'avatar de l'auteur</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Tags (séparés par des virgules)</label>
+                    <input type="text" id="article-tags" placeholder="ex: politique, économie, RDC">
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Tags (séparés par des virgules)</label>
-            <input type="text" id="article-tags" placeholder="ex: politique, économie, RDC">
-        </div>
-        
-        <div class="form-group">
-            <label>Image à la une (URL)</label>
-            <input type="text" id="article-image" placeholder="https://...">
-            <small class="helper-text">Laissez vide si pas d'image</small>
-        </div>
-        
-        <div class="form-group">
-            <label>Vidéo à la une (URL)</label>
-            <input type="text" id="article-video" placeholder="https://... (mp4, webm)">
-            <small class="helper-text">Si renseigné, la vidéo sera prioritaire sur l'image</small>
-        </div>
-        
-        <div class="form-group">
-            <label>Légende de l'image/vidéo</label>
-            <input type="text" id="article-image-caption" placeholder="Description...">
+        <!-- ACCORDÉON MÉDIAS À LA UNE -->
+        <div class="accordion-section">
+            <div class="accordion-header" id="featured-media-accordion">
+                <div class="accordion-header-left">
+                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="2.18"/>
+                        <path d="M7 2v20M17 2v20M2 12h20M2 7h5M2 17h5M17 17h5M17 7h5"/>
+                    </svg>
+                    <span class="accordion-title">Média à la une</span>
+                </div>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </div>
+            <div class="accordion-content" id="featured-media-content">
+                <div class="form-group">
+                    <label>Image à la une (URL)</label>
+                    <input type="text" id="article-image" placeholder="https://...">
+                    <small class="helper-text">Laissez vide si pas d'image</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Vidéo à la une (URL)</label>
+                    <input type="text" id="article-video" placeholder="https://... (mp4, webm)">
+                    <small class="helper-text">Si renseigné, la vidéo sera prioritaire sur l'image</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Légende de l'image/vidéo</label>
+                    <input type="text" id="article-image-caption" placeholder="Description...">
+                </div>
+            </div>
         </div>
         
         <div class="form-group">
@@ -430,7 +585,7 @@
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                     <circle cx="12" cy="12" r="3"/>
                 </svg>
-                Apercu
+                Aperçu
             </button>
             <button type="button" class="btn-secondary" id="draft-btn">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -453,5 +608,53 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/auth.js"></script>
 <script src="js/editor.js"></script>
+
+<script>
+    // Gestion des accordéons
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const isOpen = content.classList.contains('open');
+            
+            // Fermer les autres accordéons (optionnel)
+            document.querySelectorAll('.accordion-content').forEach(c => {
+                if (c !== content) {
+                    c.classList.remove('open');
+                    c.previousElementSibling.classList.remove('active');
+                }
+            });
+            
+            content.classList.toggle('open');
+            header.classList.toggle('active');
+        });
+    });
+
+    // Gestion de la programmation
+    const scheduledDateInput = document.getElementById('scheduled-publish-date');
+    const scheduledInfo = document.getElementById('scheduled-info');
+    const scheduledInfoText = document.getElementById('scheduled-info-text');
+    const scheduledBadge = document.getElementById('scheduled-badge');
+
+    if (scheduledDateInput) {
+        scheduledDateInput.addEventListener('change', function() {
+            if (this.value) {
+                const date = new Date(this.value);
+                const formattedDate = date.toLocaleString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                scheduledInfoText.textContent = 'Article programmé pour le ' + formattedDate;
+                scheduledInfo.style.display = 'flex';
+                scheduledBadge.style.display = 'inline-block';
+            } else {
+                scheduledInfo.style.display = 'none';
+                scheduledBadge.style.display = 'none';
+            }
+        });
+    }
+</script>
 </body>
 </html>
