@@ -120,7 +120,188 @@ function loadMediasFromArticle(medias) {
         }
     }
 }
+/* --------------------------------------
+   GESTION DES ARTICLES PROGRAMMÉS
+   -------------------------------------- */
 
+// Récupérer la valeur de la date programmée
+function getScheduledDate() {
+    const dateInput = document.getElementById('scheduled-publish-date');
+    if (!dateInput || !dateInput.value) return null;
+    
+    const scheduledDate = new Date(dateInput.value);
+    const now = new Date();
+    
+    // Vérifier si la date est dans le futur
+    if (scheduledDate <= now) {
+        showToast('La date programmée doit être dans le futur', 'error');
+        return null;
+    }
+    
+    return scheduledDate.toISOString();
+}
+
+// Vérifier si un article est programmé
+function isScheduled() {
+    const scheduledDate = getScheduledDate();
+    return scheduledDate !== null;
+}
+
+// Modifier la fonction saveArticle existante
+async function saveArticle(status) {
+    var title = document.getElementById('article-title').value;
+    var excerpt = document.getElementById('article-excerpt').value;
+    var category = document.getElementById('article-category').value;
+    var subcategory = document.getElementById('article-subcategory').value;
+    var tags = document.getElementById('article-tags').value;
+    var rawContent = editor ? editor.getContent() : '';
+    var content = cleanEditorContent(rawContent);
+    var medias = getAllMedias();
+    var imageUrl = document.getElementById('article-image')?.value || null;
+    var imageCaption = document.getElementById('article-image-caption')?.value || null;
+    var authorName = document.getElementById('author-name')?.value || null;
+    var authorImage = document.getElementById('author-image')?.value || null;
+    var isPriority = document.getElementById('article-priority').checked;
+    var videoUrl = document.getElementById('article-video')?.value || null;
+    
+    // ✅ NOUVEAU : Gestion de la date programmée
+    var scheduledDate = getScheduledDate();
+    var isScheduledMode = scheduledDate !== null;
+    
+    if (!title) {
+        showToast('Veuillez saisir un titre', 'error');
+        return;
+    }
+    
+    // ✅ Si l'article est programmé, on le sauvegarde en mode 'scheduled'
+    var finalStatus = status;
+    var finalIsPublished = status === 'published';
+    var finalScheduledStatus = null;
+    
+    if (isScheduledMode) {
+        finalStatus = 'scheduled';
+        finalIsPublished = false;
+        finalScheduledStatus = 'scheduled';
+        showToast(`Article programmé pour le ${new Date(scheduledDate).toLocaleString('fr-FR')}`, 'info');
+    }
+    
+    // Génération du slug (code existant)
+    var slug;
+    var customSlug = document.getElementById('article-slug')?.value;
+    
+    if (customSlug && customSlug.trim() !== '') {
+        slug = customSlug
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+    } else if (currentArticleId) {
+        try {
+            var { data: existing } = await supabaseClient
+                .from('articles')
+                .select('slug')
+                .eq('id', currentArticleId)
+                .single();
+            if (existing && existing.slug) {
+                slug = existing.slug;
+            } else {
+                slug = generateSlug(title, currentArticleId);
+            }
+        } catch(e) {
+            slug = generateSlug(title, currentArticleId);
+        }
+    } else {
+        slug = generateSlug(title, null);
+    }
+    
+    if (!currentArticleId || (customSlug && customSlug !== '')) {
+        try {
+            var { data: existingSlug } = await supabaseClient
+                .from('articles')
+                .select('slug')
+                .eq('slug', slug)
+                .neq('id', currentArticleId || '');
+            
+            if (existingSlug && existingSlug.length > 0) {
+                slug = slug + '-' + Date.now().toString().substring(0, 6);
+                showToast('Slug modifié pour éviter les doublons', 'info');
+            }
+        } catch(e) {}
+    }
+    
+    showToast('Sauvegarde en cours...', 'info');
+    
+    try {
+        var result;
+        
+        var articleData = {
+            titre: title,
+            slug: slug,
+            description: excerpt || null,
+            category: category || null,
+            subcategory: subcategory || null,
+            tags: tags || null,
+            content: content || null,
+            medias: medias || [],
+            image_url: imageUrl,
+            image_caption: imageCaption,
+            video_url: videoUrl,
+            author_name: authorName || (currentUser?.email?.split('@')[0]) || 'Rédaction',
+            author_image: authorImage || null,
+            is_priority: isPriority,
+            status: finalStatus,
+            is_published: finalIsPublished,
+            updated_at: new Date(),
+            // ✅ NOUVEAUX CHAMPS
+            scheduled_publish_at: scheduledDate,
+            scheduled_status: finalScheduledStatus
+        };
+        
+        if (currentUser && !currentArticleId) {
+            articleData.author_id = currentUser.id;
+        }
+        
+        if (currentArticleId) {
+            result = await supabaseClient
+                .from('articles')
+                .update(articleData)
+                .eq('id', currentArticleId);
+        } else {
+            articleData.created_at = new Date();
+            articleData.views = 0;
+            result = await supabaseClient
+                .from('articles')
+                .insert([articleData]);
+            
+            if (result.data && result.data[0]) {
+                currentArticleId = result.data[0].id;
+                window.history.pushState({}, '', '?id=' + currentArticleId);
+            }
+        }
+        
+        if (result.error) throw result.error;
+        
+        var successMessage;
+        if (isScheduledMode) {
+            successMessage = `Article programmé pour le ${new Date(scheduledDate).toLocaleString('fr-FR')}`;
+        } else if (finalStatus === 'published') {
+            successMessage = 'Article publié avec succès !\nURL: /article/' + slug;
+        } else {
+            successMessage = 'Brouillon sauvegardé !';
+        }
+        showToast(successMessage, 'success');
+        
+        if (finalStatus === 'published' && !isScheduledMode) {
+            setTimeout(function() {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        }
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        showToast('Erreur: ' + error.message, 'error');
+    }
+}
 /* --------------------------------------
    INITIALISATION TINYMCE
    -------------------------------------- */
