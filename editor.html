@@ -10,7 +10,6 @@
     <script src="https://cdn.tiny.cloud/1/ng2hl74s9nvz4xkgo1vpmh1djoqcgx651sxiqitbajvyhy47/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     
     <style>
-        /* Styles intégrés */
         * {
             margin: 0;
             padding: 0;
@@ -62,7 +61,6 @@
             border-color: #a30000;
         }
 
-        /* Accordéon / Tiroir */
         .accordion-section {
             border: 1px solid #e6e6e6;
             border-radius: 8px;
@@ -132,7 +130,6 @@
             max-height: 500px;
         }
 
-        /* Media groups */
         .media-group {
             border: 1px solid #e6e6e6;
             border-radius: 8px;
@@ -188,12 +185,6 @@
 
         .add-media-btn:hover {
             background: #7a0000;
-        }
-
-        .media-type-select {
-            width: auto;
-            display: inline-block;
-            margin-right: 10px;
         }
 
         .action-buttons {
@@ -330,11 +321,6 @@
             height: 16px;
         }
 
-        .small-icon {
-            width: 14px;
-            height: 14px;
-        }
-
         .scheduled-info {
             background: #e8f4fd;
             border-radius: 6px;
@@ -356,6 +342,124 @@
         .editor-toast {
             animation: slideIn 0.3s ease;
         }
+
+        /* Barre d'outils avec le bouton de collage */
+        .tinymce-toolbar-wrapper {
+            position: relative;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Bouton rond "Coller sans style" */
+        .btn-clean-paste {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            position: relative;
+            color: #1e293b;
+        }
+
+        .btn-clean-paste svg {
+            width: 18px;
+            height: 18px;
+            stroke: #475569;
+            stroke-width: 1.7;
+            fill: none;
+        }
+
+        /* Tooltip au survol */
+        .btn-clean-paste::after {
+            content: "Coller sans style (Ctrl+Shift+V)";
+            position: absolute;
+            bottom: -40px;
+            right: 0;
+            background: #1e293b;
+            color: white;
+            font-size: 11px;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 6px 12px;
+            border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+            font-weight: normal;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-clean-paste:hover::after {
+            opacity: 1;
+        }
+
+        .btn-clean-paste:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-clean-paste:hover svg {
+            stroke: #0f172a;
+        }
+
+        .btn-clean-paste:active {
+            transform: scale(0.96);
+            background: #f1f5f9;
+        }
+
+        .btn-clean-paste:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+          /* Styles pour la liste déroulante des auteurs */
+#author-select {
+    font-family: 'Lora', serif;
+    cursor: pointer;
+}
+
+#author-select option {
+    padding: 8px;
+}
+
+#author-avatar-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid #e6e6e6;
+    transition: all 0.2s ease;
+}
+
+/* Optionnel: style pour les options avec images (nécessite un plugin ou du custom JS) */
+.author-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+}
+
+/* Animation pour l'avatar */
+#author-avatar-preview {
+    transition: background-image 0.2s ease;
+}
     </style>
 </head>
 <body>
@@ -509,36 +613,48 @@
         
         <!-- ACCORDÉON MÉTADONNÉES (Auteur, Tags, etc.) -->
         <div class="accordion-section">
-            <div class="accordion-header" id="metadata-accordion">
-                <div class="accordion-header-left">
-                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                    <span class="accordion-title">Auteur & Métadonnées</span>
-                </div>
-                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 12 15 18 9"/>
-                </svg>
-            </div>
-            <div class="accordion-content" id="metadata-content">
-                <div class="form-group">
-                    <label>Nom de l'auteur</label>
-                    <input type="text" id="author-name" placeholder="Ex: Jean Dupont">
-                </div>
-                
-                <div class="form-group">
-                    <label>Photo de l'auteur (URL)</label>
-                    <input type="text" id="author-image" placeholder="https://...">
-                    <small class="helper-text">URL de l'avatar de l'auteur</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Tags (séparés par des virgules)</label>
-                    <input type="text" id="article-tags" placeholder="ex: politique, économie, RDC">
-                </div>
-            </div>
+    <div class="accordion-header" id="metadata-accordion">
+        <div class="accordion-header-left">
+            <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span class="accordion-title">Auteur & Métadonnées</span>
         </div>
+        <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+        </svg>
+    </div>
+    <div class="accordion-content" id="metadata-content">
+        <div class="form-group">
+            <label>Auteur</label>
+            <select id="author-select" style="width: 100%;">
+                <option value="">Sélectionner un auteur existant...</option>
+            </select>
+            <small class="helper-text">Sélectionnez un auteur existant ou créez-en un nouveau</small>
+        </div>
+        
+        <div class="form-group" id="author-name-group">
+            <label>Nom de l'auteur</label>
+            <input type="text" id="author-name" placeholder="Ex: Jean Dupont">
+            <small class="helper-text">Remplissez automatiquement ou manuellement</small>
+        </div>
+        
+        <div class="form-group" id="author-image-group">
+            <label>Photo de l'auteur (URL)</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="author-image" placeholder="https://...">
+                <div id="author-avatar-preview" style="width: 40px; height: 40px; border-radius: 50%; background: #f0f0f0; background-size: cover; background-position: center;"></div>
+            </div>
+            <small class="helper-text">URL de l'avatar de l'auteur</small>
+        </div>
+
+        <div class="form-group">
+            <label>Tags (séparés par des virgules)</label>
+            <input type="text" id="article-tags" placeholder="ex: politique, économie, RDC">
+        </div>
+    </div>
+</div>
 
         <!-- ACCORDÉON MÉDIAS À LA UNE -->
         <div class="accordion-section">
@@ -574,7 +690,18 @@
             </div>
         </div>
         
-        <div class="form-group">
+        <div class="form-group tinymce-toolbar-wrapper">
+            <div class="editor-toolbar">
+                <button type="button" id="paste-clean-btn" class="btn-clean-paste" title="Coller sans style">
+                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="8" y="4" width="12" height="16" rx="1.5" ry="1.5"></rect>
+                        <path d="M6 8H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path>
+                        <path d="M10 4v-2h6v2"></path>
+                        <line x1="12" y1="12" x2="18" y2="12"></line>
+                        <line x1="12" y1="16" x2="18" y2="16"></line>
+                    </svg>
+                </button>
+            </div>
             <label>Contenu de l'article</label>
             <textarea id="article-content"></textarea>
         </div>
@@ -616,7 +743,6 @@
             const content = header.nextElementSibling;
             const isOpen = content.classList.contains('open');
             
-            // Fermer les autres accordéons (optionnel)
             document.querySelectorAll('.accordion-content').forEach(c => {
                 if (c !== content) {
                     c.classList.remove('open');
@@ -655,6 +781,180 @@
             }
         });
     }
+             // Charger la liste des auteurs depuis la base de données
+async function loadAuthorsList() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('articles')
+            .select('author_name, author_image')
+            .not('author_name', 'is', null)
+            .neq('author_name', '')
+            .order('author_name', { ascending: true });
+
+        if (error) throw error;
+
+        // Filtrer pour avoir des auteurs uniques
+        const uniqueAuthors = new Map();
+        data.forEach(article => {
+            if (article.author_name && !uniqueAuthors.has(article.author_name)) {
+                uniqueAuthors.set(article.author_name, {
+                    name: article.author_name,
+                    image: article.author_image
+                });
+            }
+        });
+
+        const select = document.getElementById('author-select');
+        if (select && uniqueAuthors.size > 0) {
+            // Garder l'option par défaut
+            const defaultOption = select.querySelector('option[value=""]');
+            select.innerHTML = '';
+            select.appendChild(defaultOption);
+            
+            // Ajouter les auteurs uniques
+            uniqueAuthors.forEach((author, name) => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                option.dataset.image = author.image || '';
+                select.appendChild(option);
+            });
+        }
+        
+        console.log(`✅ ${uniqueAuthors.size} auteurs chargés`);
+    } catch (error) {
+        console.error('Erreur chargement auteurs:', error);
+    }
+}
+
+// Gérer la sélection d'un auteur
+function setupAuthorSelection() {
+    const authorSelect = document.getElementById('author-select');
+    const authorNameInput = document.getElementById('author-name');
+    const authorImageInput = document.getElementById('author-image');
+    const avatarPreview = document.getElementById('author-avatar-preview');
+    
+    if (authorSelect) {
+        authorSelect.addEventListener('change', async function() {
+            const selectedName = this.value;
+            
+            if (selectedName) {
+                // Récupérer l'image depuis la base de données
+                const { data, error } = await supabaseClient
+                    .from('articles')
+                    .select('author_name, author_image')
+                    .eq('author_name', selectedName)
+                    .not('author_image', 'is', null)
+                    .limit(1);
+                
+                if (!error && data && data[0]) {
+                    authorNameInput.value = data[0].author_name;
+                    authorImageInput.value = data[0].author_image || '';
+                    
+                    // Mettre à jour l'avatar preview
+                    if (data[0].author_image) {
+                        avatarPreview.style.backgroundImage = `url(${data[0].author_image})`;
+                        avatarPreview.style.backgroundSize = 'cover';
+                        avatarPreview.style.backgroundPosition = 'center';
+                    } else {
+                        avatarPreview.style.backgroundImage = '';
+                        avatarPreview.style.backgroundColor = '#f0f0f0';
+                    }
+                }
+            }
+        });
+    }
+    
+    // Permettre la saisie manuelle du nom
+    if (authorNameInput) {
+        authorNameInput.addEventListener('input', function() {
+            if (authorSelect) {
+                authorSelect.value = '';
+            }
+        });
+    }
+    
+    // Preview de l'image quand l'URL change
+    if (authorImageInput) {
+        authorImageInput.addEventListener('input', function() {
+            const url = this.value;
+            if (url && (url.startsWith('http') || url.startsWith('data:'))) {
+                avatarPreview.style.backgroundImage = `url(${url})`;
+                avatarPreview.style.backgroundSize = 'cover';
+                avatarPreview.style.backgroundPosition = 'center';
+            } else {
+                avatarPreview.style.backgroundImage = '';
+                avatarPreview.style.backgroundColor = '#f0f0f0';
+            }
+        });
+    }
+}
+
+// Ajouter un nouvel auteur (optionnel : suggérer de nouvelles entrées)
+async function addNewAuthor(name, imageUrl) {
+    if (!name) return;
+    
+    // Vérifier si l'auteur existe déjà
+    const { data, error } = await supabaseClient
+        .from('articles')
+        .select('author_name')
+        .eq('author_name', name)
+        .limit(1);
+    
+    if (!data || data.length === 0) {
+        // L'auteur n'existe pas encore, il sera ajouté automatiquement
+        // lors de la sauvegarde du premier article avec ce nom
+        console.log(`Nouvel auteur: ${name}`);
+    }
+}
+
+// Appeler les fonctions au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    // Attendre que supabaseClient soit disponible
+    setTimeout(() => {
+        if (typeof supabaseClient !== 'undefined') {
+            loadAuthorsList();
+            setupAuthorSelection();
+        }
+    }, 500);
+});
+    // Fonction de collage sans style (à intégrer dans editor.js ou ici)
+    document.addEventListener('DOMContentLoaded', function() {
+        const pasteCleanBtn = document.getElementById('paste-clean-btn');
+        if (pasteCleanBtn) {
+            pasteCleanBtn.addEventListener('click', async function() {
+                try {
+                    // Attendre que l'éditeur TinyMCE soit disponible
+                    if (typeof editor !== 'undefined' && editor) {
+                        const text = await navigator.clipboard.readText();
+                        if (text) {
+                            // Nettoyer le texte : supprimer les balises HTML mais garder la ponctuation
+                            let cleanText = text.replace(/<[^>]*>/g, '');
+                            // Convertir en paragraphes HTML
+                            const paragraphs = cleanText.split(/\n\s*\n/);
+                            const html = paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+                            editor.insertContent(html);
+                            
+                            // Afficher une notification
+                            if (typeof showToast === 'function') {
+                                showToast('Texte collé sans mise en forme', 'success');
+                            } else {
+                                console.log('Texte collé sans style');
+                            }
+                        }
+                    } else {
+                        console.warn('Éditeur TinyMCE non disponible');
+                    }
+                } catch (err) {
+                    console.error('Erreur de collage:', err);
+                    // Fallback: suggérer le raccourci clavier
+                    if (typeof showToast === 'function') {
+                        showToast('Utilisez Ctrl+Shift+V (ou Cmd+Shift+V sur Mac)', 'info');
+                    }
+                }
+            });
+        }
+    });
 </script>
 </body>
 </html>
