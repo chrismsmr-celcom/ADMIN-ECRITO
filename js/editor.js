@@ -322,7 +322,7 @@ function initEditor() {
         paste_remove_spans: true,
         paste_retain_style_properties: 'none',
         
-        content_style: 'body { font-family: "Lora", Georgia, serif !important; font-size: 18px; line-height: 1.6; max-width: 680px; margin: 0 auto; } img { max-width: 100%; height: auto; }',
+        content_style: 'body { font-family: "Lora", Georgia, serif !important; font-size: 18px; line-height: 1.6; max-width: 680px; margin: 0 auto; } img { max-width: 100%; height: auto; } table { width: 100%; border-collapse: collapse; margin: 20px 0; } th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; } th { background-color: #f5f5f5; font-weight: 600; }',
         
         cleanup: true,
         cleanup_on_startup: true,
@@ -339,12 +339,8 @@ function initEditor() {
             ed.on('paste', function(e) {
                 var content = (e.clipboardData || window.clipboardData).getData('text/html');
                 if (content) {
-                    content = content.replace(/style="[^"]*"/gi, '');
-                    content = content.replace(/font-family:[^;]+;/gi, '');
-                    content = content.replace(/<span[^>]*>/gi, '');
-                    content = content.replace(/<\/span>/gi, '');
-                    content = content.replace(/<li style="[^"]*">/gi, '<li>');
-                    
+                    // Nettoyer le HTML tout en préservant les tableaux
+                    content = cleanPreserveTables(content);
                     e.preventDefault();
                     ed.insertContent(content);
                 }
@@ -353,11 +349,13 @@ function initEditor() {
             ed.on('PastePostProcess', function(e) {
                 var node = e.node;
                 if (node) {
+                    // Supprimer les styles de tous les éléments
                     var elements = node.querySelectorAll('[style]');
                     for (var i = 0; i < elements.length; i++) {
                         elements[i].removeAttribute('style');
                     }
                     
+                    // Nettoyer les spans vides
                     var spans = node.querySelectorAll('span');
                     for (var j = 0; j < spans.length; j++) {
                         var span = spans[j];
@@ -365,12 +363,131 @@ function initEditor() {
                             span.outerHTML = span.innerHTML;
                         }
                     }
+                    
+                    // S'assurer que les tableaux gardent leur structure
+                    var tables = node.querySelectorAll('table');
+                    for (var k = 0; k < tables.length; k++) {
+                        var table = tables[k];
+                        table.removeAttribute('style');
+                        table.removeAttribute('class');
+                        table.removeAttribute('border');
+                        table.removeAttribute('cellspacing');
+                        table.removeAttribute('cellpadding');
+                        table.classList.add('clean-table');
+                    }
                 }
             });
         }
     });
 }
 
+// Fonction qui préserve les tableaux mais supprime les styles
+function cleanPreserveTables(html) {
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    
+    // PRÉSERVER ET NETTOYER LES TABLEAUX
+    var tables = tempDiv.querySelectorAll('table');
+    for (var i = 0; i < tables.length; i++) {
+        var table = tables[i];
+        
+        // Supprimer tous les attributs de style du tableau
+        table.removeAttribute('style');
+        table.removeAttribute('class');
+        table.removeAttribute('border');
+        table.removeAttribute('cellspacing');
+        table.removeAttribute('cellpadding');
+        table.removeAttribute('bgcolor');
+        table.removeAttribute('width');
+        table.removeAttribute('height');
+        
+        // Nettoyer les cellules (th, td)
+        var cells = table.querySelectorAll('th, td');
+        for (var j = 0; j < cells.length; j++) {
+            var cell = cells[j];
+            cell.removeAttribute('style');
+            cell.removeAttribute('class');
+            cell.removeAttribute('bgcolor');
+            cell.removeAttribute('width');
+            cell.removeAttribute('height');
+            // Garder colspan et rowspan si présents
+            if (cell.hasAttribute('colspan') && cell.getAttribute('colspan') === '1') {
+                cell.removeAttribute('colspan');
+            }
+            if (cell.hasAttribute('rowspan') && cell.getAttribute('rowspan') === '1') {
+                cell.removeAttribute('rowspan');
+            }
+        }
+        
+        // Nettoyer les lignes
+        var rows = table.querySelectorAll('tr');
+        for (var k = 0; k < rows.length; k++) {
+            rows[k].removeAttribute('style');
+            rows[k].removeAttribute('class');
+            rows[k].removeAttribute('bgcolor');
+        }
+        
+        // Nettoyer les sections (thead, tbody, tfoot)
+        var sections = table.querySelectorAll('thead, tbody, tfoot');
+        for (var l = 0; l < sections.length; l++) {
+            sections[l].removeAttribute('style');
+            sections[l].removeAttribute('class');
+        }
+    }
+    
+    // NETTOYER LE RESTE (supprimer tous les styles)
+    var allElements = tempDiv.querySelectorAll('*');
+    for (var m = 0; m < allElements.length; m++) {
+        var el = allElements[m];
+        // Ne pas retraiter les tableaux déjà nettoyés
+        if (el.tagName !== 'TABLE' && el.tagName !== 'TR' && el.tagName !== 'TD' && el.tagName !== 'TH' && el.tagName !== 'THEAD' && el.tagName !== 'TBODY' && el.tagName !== 'TFOOT') {
+            el.removeAttribute('style');
+            el.removeAttribute('class');
+        }
+        
+        // Supprimer les spans vides
+        if (el.tagName === 'SPAN' && el.attributes.length === 0) {
+            el.outerHTML = el.innerHTML;
+        }
+    }
+    
+    // Conversion finale
+    var result = tempDiv.innerHTML;
+    result = result.replace(/style="[^"]*"/gi, '');
+    result = result.replace(/class="[^"]*"/gi, '');
+    result = result.replace(/font-family:[^;]+;/gi, '');
+    
+    return result;
+}
+
+// Bouton de collage qui préserve les tableaux
+document.getElementById('paste-clean-btn').addEventListener('click', async () => {
+    try {
+        // Récupérer à la fois le HTML et le texte
+        const htmlContent = await navigator.clipboard.readText();
+        
+        // Détecter si c'est un tableau
+        const isTable = htmlContent.includes('<table') || htmlContent.includes('<tr') || htmlContent.includes('</td>') || htmlContent.includes('\t');
+        
+        if (isTable && htmlContent.includes('<')) {
+            // C'est du HTML avec potentiellement un tableau
+            let cleanHtml = cleanPreserveTables(htmlContent);
+            editor.insertContent(cleanHtml);
+            showToast('Tableau collé sans style', 'success');
+        } else {
+            // C'est du texte brut
+            let cleanText = htmlContent.replace(/<[^>]*>/g, '');
+            const paragraphs = cleanText.split(/\n\s*\n/);
+            const html = paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+            editor.insertContent(html);
+            showToast('Texte collé', 'success');
+        }
+        
+    } catch (err) {
+        console.error('Erreur:', err);
+        showToast('Utilisez Ctrl+Shift+V', 'info');
+    }
+});
 /* --------------------------------------
    CHARGEMENT D'UN ARTICLE
    -------------------------------------- */
